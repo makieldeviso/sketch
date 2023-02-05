@@ -1,0 +1,37 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    text-align: center;
+}
+
+
+body {
+    width: 80vw;
+    margin: auto;
+}
+
+#sketch-pad {
+    margin: 50px auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+
+
+.pad-row {
+    width: max-content;
+    height: max-content;
+    border: 1px solid black;
+    display: flex;
+    justify-content: center;
+}
+
+.pixel-dim {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+
+}
