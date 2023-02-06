@@ -11,27 +11,113 @@ body {
     margin: auto;
 }
 
-#sketch-pad {
-    margin: 50px auto;
+#ribbon-area {
+    
+}
+
+
+
+#pad-area {
+    margin: auto;
+    width: 50vw;
+    overflow: hidden;
+    padding: 20px;
     display: flex;
-    flex-direction: column;
     justify-content: center;
     align-items: center;
 }
 
-
+#sketch-pad {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 580px;
+    height: 580px;
+    border: 0.5px solid black;
+    margin: auto;
+    
+}
 
 .pad-row {
-    width: max-content;
-    height: max-content;
-    border: 1px solid black;
+    width: 100%;
+    height: 100%;
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
+    /* border: 0.5px solid rebeccapurple; */
 }
 
 .pixel-dim {
-    width: 30px;
-    height: 30px;
-    border: 1px solid black;
+    border: 0.5px solid gainsboro;
+    height: 100%;
+    flex: 1;
 
 }
+
+
+/* vh sizes start --------------------------*/
+header {
+    height: 5vh;
+}
+
+main {
+    height: 90vh;
+}
+
+#ribbon-area {
+    height: 5vh;
+}
+
+#pad-area {
+    height: 85vh;
+}
+
+
+
+
+
+footer {
+    height: 5vh;
+}
+
+
+/* vh sizes end --------------------------*/
+
+
+@media only screen and (width < 1260px) {
+    body {
+        width: 100vw;
+    }
+    main {
+        width: 100vw;
+    }
+    #pad-area {
+        width: 100vw;
+    }
+    #sketch-pad {
+        width: 48vw;
+        height: 48vw;
+    }
+}   
+
+@media only screen and (width < 800px) {
+    body {
+        width: 100vw;
+    }
+    main {
+        width: 100vw;
+    }
+    #pad-area {
+        width: 100vw;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-start;
+        align-items: flex-start;
+        padding: 10px;
+    }
+    #sketch-pad {
+        width: 65vw;
+        height: 65vw;
+        margin: 10px auto;
+    }
+}   
