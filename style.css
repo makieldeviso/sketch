@@ -6,9 +6,11 @@
 }
 
 
+
 body {
     width: 80vw;
     margin: auto;
+    background-color:darkslategray;
 }
 
 #ribbon-area {
@@ -125,3 +127,44 @@ footer {
         margin: 10px auto;
     }
 }   
+
+.basic-swatches, .custom-colors {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: antiquewhite;
+}
+
+.swatch, .blank-color {
+    width: 20px;
+    height: 20px;
+    border: 0.5px solid gray;
+    margin: 2px;
+}
+
+.swatch:hover {
+    box-shadow: 0 0 2px 1px blue;
+    border: 0.5px solid white;
+}
+
+#color-picked-area {
+    width: 100px;
+    height: 120px;   
+    border: 1px solid black;
+    padding: 3px;
+    margin: 5px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+#color-picked{
+    width: 70px;
+    height: 70px;   
+    border: 1px solid rgb(0, 0, 0);
+}
+
+#color-picked-area p {
+    margin: 5px;
+}

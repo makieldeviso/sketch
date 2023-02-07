@@ -19,14 +19,37 @@
         <div id="ribbon-area"></div>
         <div id="work-area">
             <div class="tools">
-                <p>SET SIZE</p>
-                <input type="range"
-                 min="8" max="100" 
-                 value="16" 
-                 id="size-slider">
-                 <p class="size-label">16px</p>
-                 <button class="size-typer">Type instead</button>
-                 <button class="set-pad-size">Set Pad Size</button>
+                <section class="colors">
+                    <h3>Colors</h3>
+
+                    <div class="swatches">
+                        <div id="color-picked-area">
+                            <div id="color-picked"></div>
+                            <p>Color 1</p>
+                        </div>
+                        <div class="basic-swatches"></div>
+                        <div class="custom-colors"></div>
+                        <input type="color" id="color-picker">
+                    </div>
+                    
+                    <div class="clear">
+                        <button id="clear-all">Clear</button>
+                    </div>
+
+
+
+                </section>
+                <section class="size-tool">
+                    <h3>Pad Size</h3>
+                    <input type="range"
+                    min="8" max="100" 
+                    value="16" 
+                    id="size-slider">
+                    <p class="size-label">16 x 16</p>
+                    <button class="size-typer">Type instead</button>
+                    <button class="set-pad-size">Set Pad Size</button>
+                </section>
+                
             </div>
             <div id="pad-area">
                 <div id="sketch-pad"></div>
