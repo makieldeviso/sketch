@@ -17,9 +17,22 @@
 
     <main>
         <div id="ribbon-area"></div>
-        <div id="pad-area">
-            <div id="sketch-pad"></div>
+        <div id="work-area">
+            <div class="tools">
+                <p>SET SIZE</p>
+                <input type="range"
+                 min="8" max="100" 
+                 value="16" 
+                 id="size-slider">
+                 <p class="size-label">16px</p>
+                 <button class="size-typer">Type instead</button>
+                 <button class="set-pad-size">Set Pad Size</button>
+            </div>
+            <div id="pad-area">
+                <div id="sketch-pad"></div>
+            </div>
         </div>
+        
         
     </main>
 

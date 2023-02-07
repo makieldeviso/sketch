@@ -21,7 +21,7 @@ body {
     margin: auto;
     width: 50vw;
     overflow: hidden;
-    padding: 20px;
+    padding: 5px;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -34,7 +34,7 @@ body {
     align-items: center;
     width: 580px;
     height: 580px;
-    border: 0.5px solid black;
+    border: 2px solid black;
     margin: auto;
     
 }
@@ -72,6 +72,10 @@ main {
     height: 85vh;
 }
 
+#work-area {
+    display: flex;
+    justify-content: center;
+}
 
 
 
