@@ -82,12 +82,14 @@ function removePad(pixelRowSize) {
 function addPad(pixelSize) {
     for (let i = 0; i < pixelSize; i++) {
         let padRow = document.createElement("div");
-        padRow.classList.add("pad-row");       
+        padRow.classList.add("pad-row");
+        padRow.setAttribute("data-row", `${pixelSize - i}`);  //row 1 would be the bottom row     
         sketchPad.appendChild(padRow);
         
         for (let i = 0; i < pixelSize; i++) {
             let pixel = document.createElement("div");
             pixel.classList.add("pixel-dim");
+            pixel.setAttribute("data-column", `${i + 1}`);
             padRow.appendChild(pixel);
         }
 }
@@ -264,9 +266,13 @@ function addEventListenersToPixels(action, padAvailable) {
         if (colorPicked === "rainbow") {
             let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
             pixel.style.backgroundColor = rainbow;
+        } else if (colorPicked === "") {
+            pixel.style.backgroundColor = colorPicked;
+            pixel.removeAttribute("data-border");
+            return;
         }
         pixel.style.backgroundColor = colorPicked;
-        pixel.classList.add("erasable");
+        pixel.setAttribute("data-border", "border");
     }
 
 }
@@ -275,9 +281,10 @@ function addEventListenersToPixels(action, padAvailable) {
 
 // clears the sketch pad (start) -------
 function clearPaint() {
-    let erasable = document.querySelectorAll(".erasable");
-    erasable.forEach(item => {
-        item.removeAttribute("style");
+    let pixels = document.querySelectorAll(".pixel-dim");
+    pixels.forEach(pixel => {
+        pixel.removeAttribute("style");
+        pixel.removeAttribute("data-border");
     });
 
     addClickedClass(this);
@@ -341,10 +348,10 @@ function addClickedClass(button) {
 
 //add styling to clicked items (end) ----
 
-
+// //toggle rainbow mode (start) ----
 let rainbowButton = document.querySelector("#rainbow");
 rainbowButton.addEventListener("click", toggleRainbow);
-// //toggle rainbow mode (end) ----
+
 
 function toggleRainbow() {
     colorPicked = "rainbow";
@@ -352,5 +359,129 @@ function toggleRainbow() {
     addClickedClass(this);
     addEventListenersToPixels("add", true);
 }
+
+// //toggle rainbow mode (end) ----
+
+let colorFillButton = document.querySelector("#fill");
+colorFillButton.addEventListener("click", toggleColorFill);
+function toggleColorFill() {
+    addClickedClass(this);
+    changeCursorStyle("clear");
+    addEventListenersToPixels("remove", false);
+
+    let pixels = document.querySelectorAll(".pixel-dim");
+    pixels.forEach(pixel => {
+        pixel.addEventListener("click", colorFill);
+    })
+
+    function colorFill() {
+        // console.log(this.parentNode);
+        // console.log(this);
+        // let pixels = document.querySelectorAll(".pixel-dim");
+
+        // pixels.forEach(pixel => {
+        //     let pixelRowNumber = pixel.getAttribute("data-row");
+        //     let pixelColumnNumber = pixel.getAttribute("data-column");
+        // })
+
+        let originRowNumber = parseInt(this.parentNode.getAttribute("data-row"));
+        let originColumnNumber = parseInt(this.getAttribute("data-column"));
+        // console.log(originRowNumber);
+        // console.log(originColumnNumber);
+
+        // let pointOrigin = [originRowNumber, originColumnNumber];
+        // console.log(pointOrigin);
+
+
+        // let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
+        // let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
+
+        // let PixelRight = pixelRow.querySelector(`[data-column="${pointOrigin[1] + 1}"]`);
+        // let PixelLeft = pixelRow.querySelector(`[data-column="${pointOrigin[1] - 1}"]`);
+
+        // let pixelRowUp = document.querySelector(`[data-row="${pointOrigin[0] + 1}"]`);
+        // let pixelRowDown = document.querySelector(`[data-row="${pointOrigin[0] - 1}"]`);
+        
+        // let PixelUp = pixelRowUp.querySelector(`[data-column="${pointOrigin[1]}"]`);
+        // let PixelDown = pixelRowDown.querySelector(`[data-column="${pointOrigin[1]}"]`);
+
+        // for (let i = 0; i < (dimensions); i++) {
+        //     let positiveX = pixelRow.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
+        //     // console.log(positiveX);
+        //     positiveX.style.backgroundColor = colorPicked;
+            
+
+        // }
+
+        // originPixel.style.backgroundColor = colorPicked;
+        // PixelRight.style.backgroundColor = colorPicked;
+        // PixelLeft.style.backgroundColor = colorPicked;
+        // PixelUp.style.backgroundColor = colorPicked;
+        // PixelDown.style.backgroundColor = colorPicked;
+
+        let pointOrigin = [originRowNumber, originColumnNumber];
+        let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
+        let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
+
+        let originRowDiv = originPixelRow;
+        let origin = originPixel;
+
+
+        for (let i = 0; i < dimensions; i++) {
+
+            originRowDiv = document.querySelector(`[data-row="${pointOrigin[0] + i}"]`);
+            origin = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
+            origin.style.backgroundColor = colorPicked;
+
+            let originBorder = origin.hasAttribute("data-border");
+
+
+            let originColumn = parseInt(origin.getAttribute("data-column"));
+            let originRow = parseInt(origin.parentNode.getAttribute("data-row"));
+            // console.log(originColumn);
+            // console.log(originRow);
+
+
+            if (originColumn >= 1 && originColumn < dimensions && !originBorder) {
+                let originRight = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i + 1}"]`);
+                originRight.style.backgroundColor = colorPicked;
+            }
+
+            if (originColumn > 1 && originColumn <= dimensions && !originBorder) {
+                let originLeft = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i - 1}"]`);
+                originLeft.style.backgroundColor = colorPicked;
+            }
+            
+            if (originRow >= 1 && originRow < dimensions && !originBorder) {
+                let originUpDiv = document.querySelector(`[data-row="${pointOrigin[0] + 1}"]`);
+                console.log(originUpDiv);
+                let originUp = originUpDiv.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
+                console.log(originUp);
+                originUp.style.backgroundColor = colorPicked;
+                
+            }
+
+            if (originRow > 1 && originRow <= dimensions && !originBorder) {
+                let originDownDiv = document.querySelector(`[data-row="${pointOrigin[0] - 1}"]`);
+                let originDown = originDownDiv.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
+                originDown.style.backgroundColor = colorPicked;
+            }
+
+
+
+            if (originColumn >= dimensions || originBorder) {
+                console.log(originColumn);
+                break;
+            }
+
+        }
+
+
+
+    }
+    
+}
+
+
 
 
