@@ -179,34 +179,49 @@ function getColorFromPicker() {
 
 function addEventListenersToPixels() {
     let pixels = document.querySelectorAll("div.pixel-dim");
+    let clicked = false;
+    pixels.forEach(pixel => {
+        pixel.addEventListener("mouseover", paintPixel);
+    });
+
     pixels.forEach(pixel => {
         pixel.addEventListener("mousedown", paintBrush);
-    });
-    pixels.forEach(pixel => {
-        pixel.addEventListener("mouseup", paintBrush);
-    });
+    });    
     pixels.forEach(pixel => {
         pixel.addEventListener("click", paintPixel);
     });
-}
 
-function paintBrush(event) {
-    let pixels = document.querySelectorAll("div.pixel-dim");
 
-    if (event.type === "mousedown"){
-        pixels.forEach(pixel => {
-            pixel.addEventListener("mouseover", paintPixel);
-    })
-    } else if (event.type === "mouseup") {
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("mouseover", paintPixel);
-    })
+    window.addEventListener("mouseup", paintBrush);
+    
 
+    function paintBrush(event) {
+        if (event.type === "mousedown"){
+            event.preventDefault();
+            clicked = true;
+            this.style.backgroundColor = colorPicked;
+        } else if (event.type === "mouseup") {
+            clicked = false;
+        }
     }
+
+    function paintPixel(event) {
+        if (event.type === "mouseover" && clicked === false) {
+            return;
+        } else if (event.type === "mouseover" && clicked === true) {
+            this.style.backgroundColor = colorPicked;
+        } else if (event.type === "click") {
+            this.style.backgroundColor = colorPicked;
+        }
 }
 
-function paintPixel() {
-    this.style.backgroundColor = colorPicked;
+
+
+
+
+
+
+    
 }
 
 // paints the pixel (end) ----------------
