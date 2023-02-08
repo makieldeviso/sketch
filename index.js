@@ -259,8 +259,14 @@ function addEventListenersToPixels(action, padAvailable) {
         if (padAccess === false) {
             return;
         }
-        pixel.classList.add("erasable");
+
+        
+        if (colorPicked === "rainbow") {
+            let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
+            pixel.style.backgroundColor = rainbow;
+        }
         pixel.style.backgroundColor = colorPicked;
+        pixel.classList.add("erasable");
     }
 
 }
@@ -313,6 +319,10 @@ function changeCursorStyle(action) {
         pixels.forEach(pixel => {
             pixel.style.cursor = `default`;
         })
+    } else if (action === "rainbow") {
+        pixels.forEach(pixel => {
+            pixel.style.cursor = `url("./cursors/rainbow.cur"), pointer`;
+        });
     }
 }
 // change cursor style (end) ------
@@ -332,13 +342,15 @@ function addClickedClass(button) {
 //add styling to clicked items (end) ----
 
 
-
+let rainbowButton = document.querySelector("#rainbow");
+rainbowButton.addEventListener("click", toggleRainbow);
 // //toggle rainbow mode (end) ----
-// function toggleEraser() {
-//     colorPicked = "";
-//     changeCursorStyle("erase");
-//     addClickedClass(this);
-//     addEventListenersToPixels("add", true);
-// }
+
+function toggleRainbow() {
+    colorPicked = "rainbow";
+    changeCursorStyle("rainbow");
+    addClickedClass(this);
+    addEventListenersToPixels("add", true);
+}
 
 
