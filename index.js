@@ -27,10 +27,13 @@ function typeForPadSize() {
         dimensions = sizeFromPrompt;
         sizeLabel.textContent = `${dimensions} x ${dimensions}`;
         sizeSlider.value = dimensions;
-    } else if (isNaN(sizeFromPrompt || sizeFromPrompt > 8 ||    sizeFromPrompt > 100)) {
+    } else if (sizeFromPrompt < 8 || sizeFromPrompt > 100) {
         alert("Invalid input! Please enter a number between 8 and 100.");
-        promptSize();
+        typeForPadSize();
     }
+    removePad(previousDimensions);
+    addPad(dimensions);
+    addEventListenersToPixels();
 }
 // Sets the pad size through prompt (end) -----------
 
@@ -42,6 +45,10 @@ sizeSlider.addEventListener("input", slideForPadSize);
 function slideForPadSize() {
         dimensions = this.value;
         sizeLabel.textContent = `${dimensions} x ${dimensions}`;
+        removePad(previousDimensions);
+        addPad(dimensions);
+        addEventListenersToPixels();
+
 }
 // Sets the pad size through slider (end) -----------
 
