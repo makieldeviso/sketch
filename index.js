@@ -1,19 +1,30 @@
 let dimensions = 16;
 let previousDimensions = 16;
-let colorPicked = "";
+let colorPicked = "black"; //set default paint color
+let padAccess = true; //checks if the pad is available
 
 let sketchPad = document.querySelector("#sketch-pad");
+let colorPickedArea = document.querySelector("#color-picked-area");
+colorPickedArea.addEventListener("click", getColorFromSwatch);
+
 let colorPickedPalette = document.querySelector("#color-picked");
+colorPickedPalette.style.backgroundColor = colorPicked; //color palette set to default
+colorPickedPalette.addEventListener("click", getColorFromSwatch);
+
+let clearButton = document.querySelector("#clear-all");
+clearButton.addEventListener("click", clearPaint);
 
 addPad(dimensions); //puts initial sketch pad on load
-addEventListenersToPixels();
+addEventListenersToPixels("add", true); //add event listeners to initial sketch pad on load
+
+changeCursorStyle("paint");
 
 let sizeLabel = document.querySelector(".size-label");
 
-
+// pad size editor (start)-----------------------------
 // Sets the pad size through prompt (start) -----------
-let sizeTyper = document.querySelector(".size-typer");
-sizeTyper.addEventListener("click", typeForPadSize);
+let sizeTyperButton = document.querySelector(".size-typer");
+sizeTyperButton.addEventListener("click", typeForPadSize);
 
 function typeForPadSize() {
     let sizeFromPrompt = parseInt(prompt("What pad size do you want to work with?\n (Input number between 8 and 100) "));
@@ -33,7 +44,7 @@ function typeForPadSize() {
     }
     removePad(previousDimensions);
     addPad(dimensions);
-    addEventListenersToPixels();
+    addEventListenersToPixels("add", true);
 }
 // Sets the pad size through prompt (end) -----------
 
@@ -47,15 +58,16 @@ function slideForPadSize() {
         sizeLabel.textContent = `${dimensions} x ${dimensions}`;
         removePad(previousDimensions);
         addPad(dimensions);
-        addEventListenersToPixels();
+        addEventListenersToPixels("add", true);
 
 }
 // Sets the pad size through slider (end) -----------
 
 
-// removes add and set the sketch pad (start) --------
+// removes and add individual  pixel to sketch pad (start) --------
 
-function removePad(pixelRowSize) {
+// removes previous pad before inserting new pad
+function removePad(pixelRowSize) { 
     let padRows = document.querySelectorAll(".pad-row");
     
     if (padRows.length > 0) {
@@ -66,6 +78,7 @@ function removePad(pixelRowSize) {
     }
 }
 
+// add new pad
 function addPad(pixelSize) {
     for (let i = 0; i < pixelSize; i++) {
         let padRow = document.createElement("div");
@@ -81,18 +94,8 @@ function addPad(pixelSize) {
     previousDimensions = pixelSize;
 }
 
-// sets the sketch pad
-let setPadSizeButton = document.querySelector(".set-pad-size");
-setPadSizeButton.addEventListener("click", setPad);
-
-function setPad() {
-    removePad(previousDimensions);
-    addPad(dimensions);
-    addEventListenersToPixels();
-}
-
-// removes add and set the sketch pad (end) --------
-
+//removes and add individual  pixel to sketch pad (end) --------
+// pad size editor (end)-----------------------------
 
 
 
@@ -143,10 +146,19 @@ swatchSelect.forEach(swatch =>{
 
 
 function getColorFromSwatch() {
-    color = this.getAttribute("style").split(/[:;]/)[1];
-    colorPicked = color;
 
-    colorPickedPalette.style.backgroundColor = colorPicked;
+    if (this === colorPickedArea) {
+        colorPicked = lastColor;
+        colorPickedPalette.style.backgroundColor = colorPicked;
+    } else {
+        color = this.getAttribute("style").split(/[:;]/)[1];
+        colorPicked = color;
+        lastColor = color; //records previous color
+        colorPickedPalette.style.backgroundColor = colorPicked;
+    }
+    changeCursorStyle("paint");
+    addClickedClass(colorPickedArea);
+    addEventListenersToPixels("add", true);
     }
 
 let colorPicker = document.querySelector("#color-picker");
@@ -156,6 +168,7 @@ colorPicker.addEventListener("change", getColorFromPicker);
 // select color from a color picker
 function getColorFromPicker() {
     colorPicked = this.value;
+    lastColor = this.value; //records previous color
     let newSwatch = document.createElement("div");
     newSwatch.classList.add("swatch");
     newSwatch.addEventListener("click", getColorFromSwatch);
@@ -165,7 +178,6 @@ function getColorFromPicker() {
     if (customSwatches.length < 10) {
         newSwatch.style.backgroundColor = `${this.value}`;
         customColorArea.insertBefore(newSwatch, customColorArea.children[customSwatches.length]);
-
         customColorArea.removeChild(customColorArea.lastChild);
         
     } else {
@@ -175,61 +187,158 @@ function getColorFromPicker() {
     }
 
     colorPickedPalette.style.backgroundColor = colorPicked;
-
-    console.log(colorPicked);
+    changeCursorStyle("paint");
+    addClickedClass(colorPickedArea);
+    addEventListenersToPixels("add", true);
+    
 }
+
 
 // select color (end) ------------------
 
 
 // paints the pixel (start) ----------------
-
-function addEventListenersToPixels() {
-    let pixels = document.querySelectorAll("div.pixel-dim");
+//  add event listeners and check if the pad is available -------
+function addEventListenersToPixels(action, padAvailable) {
     let clicked = false;
-    pixels.forEach(pixel => {
-        pixel.addEventListener("mouseover", paintPixel);
-    });
-
-    pixels.forEach(pixel => {
-        pixel.addEventListener("mousedown", paintBrush);
-    });    
-    pixels.forEach(pixel => {
-        pixel.addEventListener("click", paintPixel);
-    });
-
-
-    window.addEventListener("mouseup", paintBrush);
+    padAccess = padAvailable;
     
+    if (action === "remove" || padAccess === false) {
+        let pixels = document.querySelectorAll(".pixel-dim");
+    
+        pixels.forEach(pixel => {
+            pixel.removeEventListener("mouseover", paintPixel);
+        });
+
+        pixels.forEach(pixel => {
+            pixel.removeEventListener("mousedown", paintBrush);
+        });    
+        pixels.forEach(pixel => {
+            pixel.removeEventListener("click", paintPixel);
+        });
+        window.removeEventListener("mouseup", paintBrush);
+    
+    
+    } else if (action === "add" && padAccess === true) {
+        let pixels = document.querySelectorAll(".pixel-dim");
+    
+        pixels.forEach(pixel => {
+            pixel.addEventListener("mouseover", paintPixel);
+        });
+
+        pixels.forEach(pixel => {
+            pixel.addEventListener("mousedown", paintBrush);
+        });    
+        pixels.forEach(pixel => {
+            pixel.addEventListener("click", paintPixel);
+        });
+        window.addEventListener("mouseup", paintBrush); //allows mouseup outside the pad
+    }
 
     function paintBrush(event) {
         if (event.type === "mousedown"){
             event.preventDefault();
             clicked = true;
-            this.style.backgroundColor = colorPicked;
+            paint(this);
         } else if (event.type === "mouseup") {
             clicked = false;
         }
     }
 
     function paintPixel(event) {
-        if (event.type === "mouseover" && clicked === false) {
+        if (event.type === "mouseover" & clicked === false || padAccess === false) {
             return;
-        } else if (event.type === "mouseover" && clicked === true) {
-            this.style.backgroundColor = colorPicked;
-        } else if (event.type === "click") {
-            this.style.backgroundColor = colorPicked;
+        } else if (event.type === "mouseover" && clicked === true && padAccess === true) {
+            paint(this);
+        } else if (event.type === "click" && padAccess === true) {
+            paint(this);
         }
-}
+    }
 
+    function paint(pixel) {
+        if (padAccess === false) {
+            return;
+        }
+        pixel.classList.add("erasable");
+        pixel.style.backgroundColor = colorPicked;
+    }
 
-
-
-
-
-
-    
 }
 
 // paints the pixel (end) ----------------
+
+// clears the sketch pad (start) -------
+function clearPaint() {
+    let erasable = document.querySelectorAll(".erasable");
+    erasable.forEach(item => {
+        item.removeAttribute("style");
+    });
+
+    addClickedClass(this);
+    addEventListenersToPixels("remove", false);
+    changeCursorStyle("clear");
+    setTimeout(() => {
+        this.classList.remove("clicked");
+    }, 50);   
+}
+
+// clears the sketch pad (end) -------
+
+// eraser (start) ---------
+let eraserButton = document.querySelector("#eraser");
+eraserButton.addEventListener("click", toggleEraser);
+
+let lastColor = "black"; //records previous color
+
+function toggleEraser() {
+    colorPicked = "";
+    changeCursorStyle("erase");
+    addClickedClass(this);
+    addEventListenersToPixels("add", true);
+}
+// eraser (end) ---------
+
+// change cursor style (start) ------
+function changeCursorStyle(action) {
+    let pixels = document.querySelectorAll("div.pixel-dim");
+    if (action === "paint") {
+        pixels.forEach(pixel => {
+            pixel.style.cursor = `url("./cursors/brush.cur"), pointer`;
+        });
+    } else if (action === "erase") {
+        pixels.forEach(pixel => {
+            pixel.style.cursor = `url('./cursors/eraser.cur'), crosshair`;
+        })
+    } else if (action === "clear") {
+        pixels.forEach(pixel => {
+            pixel.style.cursor = `default`;
+        })
+    }
+}
+// change cursor style (end) ------
+
+
+//add styling to clicked items (start) ----
+function addClickedClass(button) {
+    let otherClicked = document.querySelectorAll(".clicked");
+    if (otherClicked.length > 0) {
+        otherClicked.forEach(clicked => {
+            clicked.classList.remove("clicked");
+        })
+    }
+    button.classList.add("clicked");
+}
+
+//add styling to clicked items (end) ----
+
+
+
+// //toggle rainbow mode (end) ----
+// function toggleEraser() {
+//     colorPicked = "";
+//     changeCursorStyle("erase");
+//     addClickedClass(this);
+//     addEventListenersToPixels("add", true);
+// }
+
 
