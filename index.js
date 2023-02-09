@@ -52,6 +52,9 @@ colorPickedPalette.addEventListener("click", getColorFromSwatch);
 let clearButton = document.querySelector("#clear-all");
 clearButton.addEventListener("click", clearPaint);
 
+let eraserButton = document.querySelector("#eraser");
+eraserButton.addEventListener("click", toggleEraser);
+
 addPad(dimensions); //puts initial sketch pad on load
 addEventListenersToPixels("add", true); //add event listeners to initial sketch pad on load
 
@@ -206,7 +209,13 @@ function getColorFromSwatch() {
         changeCursorStyle("paint");
         addClickedClass(paintButton);
     }
-    
+    //turns off eraser mode when swatch is clicked
+    if (eraserMode["status"] === true) {
+        turnOnModeOthersOff(eraserButton, false);
+        changeCursorStyle("clear");
+        eraserButton.classList.remove("clicked");
+    }
+
     }
 
 let colorPicker = document.querySelector("#color-picker");
@@ -235,7 +244,7 @@ function getColorFromPicker() {
     }
 
     colorPickedPalette.style.backgroundColor = colorPicked;
-    
+
     addClickedClass(colorPickedArea);
     
     if (rainbowMode["status"] === true) {
@@ -244,6 +253,11 @@ function getColorFromPicker() {
         changeCursorStyle("paint");
         addClickedClass(paintButton);
     }
+
+
+
+
+
 }
 // select color (end) ------------------
 
@@ -371,8 +385,7 @@ function togglePaint() {
 
 
 // eraser (start) ---------
-let eraserButton = document.querySelector("#eraser");
-eraserButton.addEventListener("click", toggleEraser);
+
 
 function toggleEraser() {
 
