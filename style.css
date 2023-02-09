@@ -177,7 +177,7 @@ footer {
 }
 
 
-#clear-all, #eraser, #rainbow, #fill {
+#clear-all, #eraser, #rainbow, #fill, #paint {
     width: 100px;
     height: 50px;
     font-size: 1.5rem;
@@ -188,7 +188,8 @@ footer {
 #clear-all.clicked,
 #eraser.clicked, 
 #rainbow.clicked, 
-#fill.clicked  {
+#fill.clicked,
+#paint.clicked  {
     scale:1.1;
     box-shadow: 0 0 2px 1px blue;
     border: 0.5px solid white;

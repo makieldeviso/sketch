@@ -1,22 +1,28 @@
 let dimensions = 16;
 let previousDimensions = 16;
 let colorPicked = "black"; //set default paint color
+let lastColor = "black"; //records previous color
 
 
 let padAccess = true; //checks if the pad is available
 // let rainbowButtonOn = false; //checks if rainbow mode is on
 
+let modeFlagsArray = [];
 function ModeFlag (mode, status) {
     this.mode =  mode;
     this.status = status;
+
+    modeFlagsArray.push(this);
 }
 
     let rainbowMode = new ModeFlag ("rainbowMode", false);
     let eraserMode = new ModeFlag ("eraserMode", false);
     let colorFillMode = new ModeFlag ("colorFillMode", false);
-    let paintMode = new ModeFlag ("paintMode", false);
+    let paintMode = new ModeFlag ("paintMode", true);
 
-let modeFlagsArray = [rainbowMode, eraserMode, colorFillMode, paintMode];
+    console.log(modeFlagsArray);
+
+// let modeFlagsArray = [rainbowMode, eraserMode, colorFillMode, paintMode];
 
 function turnOnModeOthersOff(modeToOn, onOrOff) {
     if (onOrOff === false) {
@@ -190,9 +196,17 @@ function getColorFromSwatch() {
         lastColor = color; //records previous color
         colorPickedPalette.style.backgroundColor = colorPicked;
     }
-    changeCursorStyle("paint");
+    
     addClickedClass(colorPickedArea);
-    addEventListenersToPixels("add", true);
+
+    //change to normal painter if before click painter mode is on
+    if (rainbowMode["status"] === true) {
+        turnOnModeOthersOff(rainbowMode, false);
+        turnOnModeOthersOff(paintMode, true);
+        changeCursorStyle("paint");
+        addClickedClass(paintButton);
+    }
+    
     }
 
 let colorPicker = document.querySelector("#color-picker");
@@ -221,10 +235,15 @@ function getColorFromPicker() {
     }
 
     colorPickedPalette.style.backgroundColor = colorPicked;
-    changeCursorStyle("paint");
-    addClickedClass(colorPickedArea);
-    addEventListenersToPixels("add", true);
     
+    addClickedClass(colorPickedArea);
+    
+    if (rainbowMode["status"] === true) {
+        turnOnModeOthersOff(rainbowMode, false);
+        turnOnModeOthersOff(paintMode, true);
+        changeCursorStyle("paint");
+        addClickedClass(paintButton);
+    }
 }
 // select color (end) ------------------
 
@@ -320,6 +339,9 @@ function clearPaint() {
     addClickedClass(this);
     addEventListenersToPixels("remove", false);
     changeCursorStyle("clear");
+    turnOnModeOthersOff("", true); //turns off all modes
+
+
     setTimeout(() => {
         this.classList.remove("clicked");
     }, 50);   
@@ -327,11 +349,30 @@ function clearPaint() {
 
 // clears the sketch pad (end) -------
 
+
+let paintButton = document.querySelector("#paint");
+paintButton.addEventListener("click", togglePaint);
+
+function togglePaint() {
+    if (paintMode["status"] === false) {
+        turnOnModeOthersOff(paintMode, true);
+
+        changeCursorStyle("paint");
+        addClickedClass(this);
+        addEventListenersToPixels("add", true);
+    } else if (paintMode["status"] === true) {
+        turnOnModeOthersOff(paintMode, false);
+
+        changeCursorStyle("clear");
+        this.classList.remove("clicked");
+        addEventListenersToPixels("remove", false);
+    }
+}
+
+
 // eraser (start) ---------
 let eraserButton = document.querySelector("#eraser");
 eraserButton.addEventListener("click", toggleEraser);
-
-let lastColor = "black"; //records previous color
 
 function toggleEraser() {
 
@@ -579,6 +620,7 @@ function toggleColorFill() {
 // change cursor style (start) ------
 function changeCursorStyle(action) {
     let pixels = document.querySelectorAll("div.pixel-dim");
+
     if (action === "paint") {
         pixels.forEach(pixel => {
             pixel.style.cursor = `url("./cursors/brush.cur"), pointer`;
@@ -606,11 +648,46 @@ function changeCursorStyle(action) {
 
 //add styling to clicked items (start) ----
 function addClickedClass(button) {
+
     let otherClicked = document.querySelectorAll(".clicked");
+
+    // let buttontest = button.querySelector("p").textContent;
+    // console.log(buttontest);
+
+    if (button.hasAttribute("data-swatch")) {
+        button.classList.add("clicked");
+        if (document.querySelector("#rainbow").hasAttribute("class")) {
+            document.querySelector("#rainbow").classList.remove("clicked");
+        }
+        return;
+    }
+
     if (otherClicked.length > 0) {
         otherClicked.forEach(clicked => {
             clicked.classList.remove("clicked");
-        })
+        });
+
+        if (button.textContent === "Clear" || button.textContent === "Eraser") {
+            button.classList.add("clicked");
+            return;
+        } else if (button.textContent === "Rainbow"){
+            document.querySelector("#color-picked-area").classList.add("clicked");
+            colorPicked = "rainbow";
+        } else {
+            document.querySelector("#color-picked-area").classList.add("clicked");
+            colorPicked = lastColor;
+        }
+        
+    } else if (otherClicked.length === 0) {
+        if (button.textContent === "Eraser") {
+            colorPicked = "";
+        } else if (button.textContent === "Rainbow"){
+            document.querySelector("#color-picked-area").classList.add("clicked");
+            colorPicked = "rainbow";
+        } else {
+            document.querySelector("#color-picked-area").classList.add("clicked");
+            colorPicked = lastColor;
+        }
     }
     button.classList.add("clicked");
 }
