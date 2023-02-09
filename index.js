@@ -266,13 +266,15 @@ function addEventListenersToPixels(action, padAvailable) {
         if (colorPicked === "rainbow") {
             let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
             pixel.style.backgroundColor = rainbow;
+            pixel.setAttribute("data-color", rainbow);
+            return;
         } else if (colorPicked === "") {
             pixel.style.backgroundColor = colorPicked;
-            pixel.removeAttribute("data-border");
+            pixel.removeAttribute("data-color");
             return;
         }
         pixel.style.backgroundColor = colorPicked;
-        pixel.setAttribute("data-border", "border");
+        pixel.setAttribute("data-color", colorPicked);
     }
 
 }
@@ -284,7 +286,7 @@ function clearPaint() {
     let pixels = document.querySelectorAll(".pixel-dim");
     pixels.forEach(pixel => {
         pixel.removeAttribute("style");
-        pixel.removeAttribute("data-border");
+        pixel.removeAttribute("data-color");
     });
 
     addClickedClass(this);
@@ -394,6 +396,8 @@ function toggleColorFill() {
 
     function colorFill() {
 
+        let canvasColor = this.getAttribute("data-color");
+
         let originRowNumber = parseInt(this.parentNode.getAttribute("data-row"));
         let originColumnNumber = parseInt(this.getAttribute("data-column"));
         
@@ -403,8 +407,9 @@ function toggleColorFill() {
 
         let originRowDiv = originPixelRow;
         let origin = originPixel;
+        
 
-        // propagate paint from origin function
+        // propagate paint from origin function (start) ---------
         function propagate() {
 
             // variables
@@ -420,8 +425,38 @@ function toggleColorFill() {
         // paints the pixel
             function paintFill(pixel) {
                 pixel.style.backgroundColor = colorPicked; //paints origin
+                pixel.setAttribute("data-color", colorPicked);
                 pixel.setAttribute("data-filled", "fillPoint");
+                
             }
+
+
+            function checkColorAttribute(pixel) {
+                let originColor = canvasColor;
+
+                // immediately stop function when pixel is out of bounds
+                if (pixel === null) {
+                    return true;
+                } 
+
+                let pixelColor = pixel.getAttribute("data-color");
+
+
+                if (originColor === colorPicked) {
+                    return true;
+                }
+
+                if (originColor === pixelColor) {
+                        return false;
+                }else {
+                        return true;
+                }
+            }
+
+            
+
+
+
 
         //attribute checker function
             function checkAttribute(pixel, attribute) {
@@ -434,6 +469,7 @@ function toggleColorFill() {
     
 
             origin.setAttribute("data-origin", "origin");
+            origin.setAttribute("data-color", colorPicked); // adds data-color attribute to first point
             if (origin.hasAttribute("data-filled")) {
                 origin.removeAttribute("data-filled");
             }
@@ -454,12 +490,11 @@ function toggleColorFill() {
             let adjacentPosYOrigin = checkAttribute(posY, "data-origin");
             let adjacentNegYOrigin = checkAttribute(negY, "data-origin");
 
-
-            // checks if the adjacent pixel has data-border attribute
-            let adjacentPosXBorder = checkAttribute(posX, "data-border");
-            let adjacentNegXBorder = checkAttribute(negX, "data-border");
-            let adjacentPosYBorder = checkAttribute(posY, "data-border");
-            let adjacentNegYBorder = checkAttribute(negY, "data-border");
+            // checks if the adjacent pixel has the same color as origin
+            let adjacentPosXColor = checkColorAttribute(posX);
+            let adjacentNegXColor = checkColorAttribute(negX);
+            let adjacentPosYColor = checkColorAttribute(posY);
+            let adjacentNegYColor = checkColorAttribute(negY);
 
         
             // paints the pixel if it passes the right conditions
@@ -467,7 +502,7 @@ function toggleColorFill() {
                 newOriginColumn < dimensions &&
                 !originBorder &&
                 adjacentPosXOrigin === false &&
-                adjacentPosXBorder === false) {
+                adjacentPosXColor === false) {
                 paintFill(posX);
             }
         
@@ -475,7 +510,7 @@ function toggleColorFill() {
                 newOriginColumn <= dimensions && 
                 !originBorder && 
                 adjacentNegXOrigin === false &&
-                adjacentNegXBorder === false) {
+                adjacentNegXColor === false) {
                 paintFill(negX); 
             }
 
@@ -483,7 +518,7 @@ function toggleColorFill() {
                 newOriginRow < dimensions && 
                 !originBorder && 
                 adjacentPosYOrigin === false &&
-                adjacentPosYBorder === false) {
+                adjacentPosYColor === false) {
                 paintFill(posY);    
             }
         
@@ -491,12 +526,13 @@ function toggleColorFill() {
                 newOriginRow <= dimensions && 
                 !originBorder && 
                 adjacentNegYOrigin === false &&
-                adjacentNegYBorder === false) {
+                adjacentNegYColor === false) {
                 paintFill(negY);
             }
         
         }
-            
+        // propagate paint from origin function (end) ---------  
+
         propagate(); // puts first point of fill using origin div
 
         //loops until all spaces are painted
