@@ -362,6 +362,24 @@ function toggleRainbow() {
 
 // //toggle rainbow mode (end) ----
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 let colorFillButton = document.querySelector("#fill");
 colorFillButton.addEventListener("click", toggleColorFill);
 function toggleColorFill() {
@@ -375,50 +393,10 @@ function toggleColorFill() {
     })
 
     function colorFill() {
-        // console.log(this.parentNode);
-        // console.log(this);
-        // let pixels = document.querySelectorAll(".pixel-dim");
-
-        // pixels.forEach(pixel => {
-        //     let pixelRowNumber = pixel.getAttribute("data-row");
-        //     let pixelColumnNumber = pixel.getAttribute("data-column");
-        // })
 
         let originRowNumber = parseInt(this.parentNode.getAttribute("data-row"));
         let originColumnNumber = parseInt(this.getAttribute("data-column"));
-        // console.log(originRowNumber);
-        // console.log(originColumnNumber);
-
-        // let pointOrigin = [originRowNumber, originColumnNumber];
-        // console.log(pointOrigin);
-
-
-        // let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
-        // let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
-
-        // let PixelRight = pixelRow.querySelector(`[data-column="${pointOrigin[1] + 1}"]`);
-        // let PixelLeft = pixelRow.querySelector(`[data-column="${pointOrigin[1] - 1}"]`);
-
-        // let pixelRowUp = document.querySelector(`[data-row="${pointOrigin[0] + 1}"]`);
-        // let pixelRowDown = document.querySelector(`[data-row="${pointOrigin[0] - 1}"]`);
         
-        // let PixelUp = pixelRowUp.querySelector(`[data-column="${pointOrigin[1]}"]`);
-        // let PixelDown = pixelRowDown.querySelector(`[data-column="${pointOrigin[1]}"]`);
-
-        // for (let i = 0; i < (dimensions); i++) {
-        //     let positiveX = pixelRow.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
-        //     // console.log(positiveX);
-        //     positiveX.style.backgroundColor = colorPicked;
-            
-
-        // }
-
-        // originPixel.style.backgroundColor = colorPicked;
-        // PixelRight.style.backgroundColor = colorPicked;
-        // PixelLeft.style.backgroundColor = colorPicked;
-        // PixelUp.style.backgroundColor = colorPicked;
-        // PixelDown.style.backgroundColor = colorPicked;
-
         let pointOrigin = [originRowNumber, originColumnNumber];
         let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
         let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
@@ -426,60 +404,125 @@ function toggleColorFill() {
         let originRowDiv = originPixelRow;
         let origin = originPixel;
 
+        // propagate paint from origin function
+        function propagate() {
 
-        for (let i = 0; i < dimensions; i++) {
+            // variables
+            originRowDiv = origin.parentNode; //the div where the origin pixel is located
+            let newOriginRow = parseInt(originRowDiv.getAttribute("data-row"));
+            let newOriginColumn = parseInt(origin.getAttribute("data-column"));
+            pointOrigin = [newOriginRow, newOriginColumn];
 
-            originRowDiv = document.querySelector(`[data-row="${pointOrigin[0] + i}"]`);
-            origin = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
-            origin.style.backgroundColor = colorPicked;
-
+            // flags
             let originBorder = origin.hasAttribute("data-border");
 
-
-            let originColumn = parseInt(origin.getAttribute("data-column"));
-            let originRow = parseInt(origin.parentNode.getAttribute("data-row"));
-            // console.log(originColumn);
-            // console.log(originRow);
-
-
-            if (originColumn >= 1 && originColumn < dimensions && !originBorder) {
-                let originRight = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i + 1}"]`);
-                originRight.style.backgroundColor = colorPicked;
+                        
+        // paints the pixel
+            function paintFill(pixel) {
+                pixel.style.backgroundColor = colorPicked; //paints origin
+                pixel.setAttribute("data-filled", "fillPoint");
             }
 
-            if (originColumn > 1 && originColumn <= dimensions && !originBorder) {
-                let originLeft = originPixelRow.querySelector(`[data-column="${pointOrigin[1] + i - 1}"]`);
-                originLeft.style.backgroundColor = colorPicked;
+        //attribute checker function
+            function checkAttribute(pixel, attribute) {
+                if (pixel === null) {
+                    return true;
+                } else {
+                    return pixel.hasAttribute(attribute);
+                }   
             }
+    
+
+            origin.setAttribute("data-origin", "origin");
+            if (origin.hasAttribute("data-filled")) {
+                origin.removeAttribute("data-filled");
+            }
+
+            origin.style.backgroundColor = colorPicked;
+
+
+            // adjacent pixels
+            let posX = originRowDiv.querySelector(`[data-column="${newOriginColumn + 1}"]`);
+            let negX = originRowDiv.querySelector(`[data-column="${newOriginColumn - 1}"]`);
+            let posY = document.querySelector(`[data-row="${newOriginRow + 1}"]>[data-column="${newOriginColumn}"]`);
+            let negY = document.querySelector(`[data-row="${newOriginRow - 1}"]>[data-column="${newOriginColumn}"]`);
+              
+
+            // checks if the adjacent pixel is a origin
+            let adjacentPosXOrigin = checkAttribute(posX, "data-origin");
+            let adjacentNegXOrigin = checkAttribute(negX, "data-origin");
+            let adjacentPosYOrigin = checkAttribute(posY, "data-origin");
+            let adjacentNegYOrigin = checkAttribute(negY, "data-origin");
+
+
+            // checks if the adjacent pixel has data-border attribute
+            let adjacentPosXBorder = checkAttribute(posX, "data-border");
+            let adjacentNegXBorder = checkAttribute(negX, "data-border");
+            let adjacentPosYBorder = checkAttribute(posY, "data-border");
+            let adjacentNegYBorder = checkAttribute(negY, "data-border");
+
+        
+            // paints the pixel if it passes the right conditions
+            if (newOriginColumn >= 1 && 
+                newOriginColumn < dimensions &&
+                !originBorder &&
+                adjacentPosXOrigin === false &&
+                adjacentPosXBorder === false) {
+                paintFill(posX);
+            }
+        
+            if (newOriginColumn > 1 && 
+                newOriginColumn <= dimensions && 
+                !originBorder && 
+                adjacentNegXOrigin === false &&
+                adjacentNegXBorder === false) {
+                paintFill(negX); 
+            }
+
+            if (newOriginRow >= 1 && 
+                newOriginRow < dimensions && 
+                !originBorder && 
+                adjacentPosYOrigin === false &&
+                adjacentPosYBorder === false) {
+                paintFill(posY);    
+            }
+        
+            if (newOriginRow > 1 && 
+                newOriginRow <= dimensions && 
+                !originBorder && 
+                adjacentNegYOrigin === false &&
+                adjacentNegYBorder === false) {
+                paintFill(negY);
+            }
+        
+        }
             
-            if (originRow >= 1 && originRow < dimensions && !originBorder) {
-                let originUpDiv = document.querySelector(`[data-row="${pointOrigin[0] + 1}"]`);
-                console.log(originUpDiv);
-                let originUp = originUpDiv.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
-                console.log(originUp);
-                originUp.style.backgroundColor = colorPicked;
+        propagate(); // puts first point of fill using origin div
+
+        //loops until all spaces are painted
+        for(let i = 0; i < dimensions * dimensions; i++) {
+            let fillPoint = document.querySelectorAll("[data-filled='fillPoint']");
+            
+    
+            fillPoint.forEach(point => {
+                origin = point;
+                propagate();
                 
-            }
+            })
 
-            if (originRow > 1 && originRow <= dimensions && !originBorder) {
-                let originDownDiv = document.querySelector(`[data-row="${pointOrigin[0] - 1}"]`);
-                let originDown = originDownDiv.querySelector(`[data-column="${pointOrigin[1] + i}"]`);
-                originDown.style.backgroundColor = colorPicked;
-            }
-
-
-
-            if (originColumn >= dimensions || originBorder) {
-                console.log(originColumn);
+            let remainingFillPoint =  document.querySelectorAll("[data-filled='fillPoint']");
+            if (remainingFillPoint.length === 0) {
                 break;
             }
 
         }
-
-
-
+        // removes origin data attribute
+        let usedAsOrigin =  document.querySelectorAll("[data-origin='origin']");
+                usedAsOrigin.forEach(origin => {
+                    origin.removeAttribute("data-origin");
+                });
     }
-    
+
 }
 
 
