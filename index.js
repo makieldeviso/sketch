@@ -3,10 +3,9 @@ let previousDimensions = 16;
 let colorPicked = "black"; //set default paint color
 let lastColor = "black"; //records previous color
 
-
 let padAccess = true; //checks if the pad is available
-// let rainbowButtonOn = false; //checks if rainbow mode is on
 
+// Mode flags status toggler (start) -----------------------
 let modeFlagsArray = [];
 function ModeFlag (mode, status) {
     this.mode =  mode;
@@ -22,8 +21,7 @@ function ModeFlag (mode, status) {
 
     console.log(modeFlagsArray);
 
-// let modeFlagsArray = [rainbowMode, eraserMode, colorFillMode, paintMode];
-
+// Checks the status of modes to enhance active toggling
 function turnOnModeOthersOff(modeToOn, onOrOff) {
     if (onOrOff === false) {
         modeToOn["status"] = false;
@@ -36,10 +34,7 @@ function turnOnModeOthersOff(modeToOn, onOrOff) {
         modeToOn["status"] = true;
     }
 }
-
-
-
-
+// Mode flags status toggler (end) -----------------------
 
 let sketchPad = document.querySelector("#sketch-pad");
 let colorPickedArea = document.querySelector("#color-picked-area");
@@ -85,10 +80,9 @@ function typeForPadSize() {
     }
     removePad(previousDimensions);
     addPad(dimensions);
-    addEventListenersToPixels("add", true);
+    addEventListenersToPixels("add", true);  
 }
 // Sets the pad size through prompt (end) -----------
-
 
 // Sets the pad size through slider (start) -----------
 let sizeSlider = document.querySelector("#size-slider");
@@ -99,15 +93,15 @@ function slideForPadSize() {
         sizeLabel.textContent = `${dimensions} x ${dimensions}`;
         removePad(previousDimensions);
         addPad(dimensions);
-        addEventListenersToPixels("add", true);
 
+        addEventListenersToPixels("add", true);
 }
 // Sets the pad size through slider (end) -----------
 
 
-// removes and add individual  pixel to sketch pad (start) --------
+// Removes and add individual  pixel to sketch pad (start) --------
 
-// removes previous pad before inserting new pad
+// Removes previous pad before inserting new pad
 function removePad(pixelRowSize) { 
     let padRows = document.querySelectorAll(".pad-row");
     
@@ -119,7 +113,7 @@ function removePad(pixelRowSize) {
     }
 }
 
-// add new pad
+// Adds new pad
 function addPad(pixelSize) {
     for (let i = 0; i < pixelSize; i++) {
         let padRow = document.createElement("div");
@@ -137,15 +131,17 @@ function addPad(pixelSize) {
     previousDimensions = pixelSize;
 }
 
-//removes and add individual  pixel to sketch pad (end) --------
-// pad size editor (end)-----------------------------
+// Removes and Add individual  pixel to sketch pad (end) --------
+// Pad size editor (end)-----------------------------
 
 
 
 // select color (start) ------------------
+let swatchColors=[];
 function BasicSwatch(name, color) {
     this.name = name;
     this.color = color;
+    swatchColors.push(this);
 }
 
     let black = new BasicSwatch("black", "#000000");
@@ -158,9 +154,7 @@ function BasicSwatch(name, color) {
     let blue = new BasicSwatch("blue", "#0000FF");
     let indigo = new BasicSwatch("indigo", "#4B0082");
     let violet = new BasicSwatch("violet", "#EE82EE");
-
-
-let swatchColors = [black, gray, brown, red, orange, yellow, green, blue, indigo, violet];
+    // let white = new BasicSwatch("white", "#FFFFFF");
 
 let swatchArea = document.querySelector(".basic-swatches");
 let customColorArea = document.querySelector(".custom-colors");
@@ -176,7 +170,7 @@ for (let i = 0; i < swatchColors.length; i++) {
 for (let i = 0; i < swatchColors.length; i++) {
     let swatchPixel = document.createElement("div");
     swatchPixel.classList.add("blank-color");
-    swatchPixel.style.backgroundColor = "white";
+    swatchPixel.style.backgroundColor = "#BDCDD6";
     customColorArea.appendChild(swatchPixel);
 }
 
@@ -216,7 +210,7 @@ function getColorFromSwatch() {
         eraserButton.classList.remove("clicked");
     }
 
-    }
+}
 
 let colorPicker = document.querySelector("#color-picker");
 colorPicker.addEventListener("change", getColorFromPicker);
@@ -253,11 +247,6 @@ function getColorFromPicker() {
         changeCursorStyle("paint");
         addClickedClass(paintButton);
     }
-
-
-
-
-
 }
 // select color (end) ------------------
 
@@ -281,64 +270,80 @@ function addEventListenersToPixels(action, padAvailable) {
         pixels.forEach(pixel => {
             pixel.removeEventListener("click", paintPixel);
         });
+        pixels.forEach(pixel => {
+            pixel.removeEventListener("click", colorFill);
+        });
         window.removeEventListener("mouseup", paintBrush);
-    
-    
-    } else if (action === "add" && padAccess === true) {
+    }
+    //enables active toggling of padSize without turning off colorFill Mode
+    //since changing padSize initially removes all pixels and add new ones
+    if (colorFillMode["status"] === true){
         let pixels = document.querySelectorAll(".pixel-dim");
+        pixels.forEach(pixel => {
+            pixel.addEventListener("click", colorFill);
+        });
+        return;
+
+    } else if (paintMode["status"] === true || 
+        rainbowMode["status"] === true ||
+        eraserMode["status"] === true) {
+        
+        if (action === "add" && padAccess === true) {
+            let pixels = document.querySelectorAll(".pixel-dim");
+        
+            pixels.forEach(pixel => {
+                pixel.addEventListener("mouseover", paintPixel);
+            });
     
-        pixels.forEach(pixel => {
-            pixel.addEventListener("mouseover", paintPixel);
-        });
-
-        pixels.forEach(pixel => {
-            pixel.addEventListener("mousedown", paintBrush);
-        });    
-        pixels.forEach(pixel => {
-            pixel.addEventListener("click", paintPixel);
-        });
-        window.addEventListener("mouseup", paintBrush); //allows mouseup outside the pad
-    }
-
-    function paintBrush(event) {
-        if (event.type === "mousedown"){
-            event.preventDefault();
-            clicked = true;
-            paint(this);
-        } else if (event.type === "mouseup") {
-            clicked = false;
+            pixels.forEach(pixel => {
+                pixel.addEventListener("mousedown", paintBrush);
+            });    
+            pixels.forEach(pixel => {
+                pixel.addEventListener("click", paintPixel);
+            });
+            window.addEventListener("mouseup", paintBrush); //allows mouseup outside the pad
         }
-    }
-
-    function paintPixel(event) {
-        if (event.type === "mouseover" & clicked === false || padAccess === false) {
-            return;
-        } else if (event.type === "mouseover" && clicked === true && padAccess === true) {
-            paint(this);
-        } else if (event.type === "click" && padAccess === true) {
-            paint(this);
+    
+        function paintBrush(event) {
+            if (event.type === "mousedown"){
+                event.preventDefault();
+                clicked = true;
+                paint(this);
+            } else if (event.type === "mouseup") {
+                event.preventDefault();
+                clicked = false;
+            }
         }
-    }
-
-    function paint(pixel) {
-        if (padAccess === false) {
-            return;
+    
+        function paintPixel(event) {
+            if (event.type === "mouseover" & clicked === false || padAccess === false) {
+                return;
+            } else if (event.type === "mouseover" && clicked === true && padAccess === true) {
+                paint(this);
+            } else if (event.type === "click" && padAccess === true) {
+                paint(this);
+            }
         }
-
-        if (colorPicked === "rainbow") {
-            let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
-            pixel.style.backgroundColor = rainbow;
-            pixel.setAttribute("data-color", rainbow);
-            return;
-        } else if (colorPicked === "") {
+    
+        function paint(pixel) {
+            if (padAccess === false) {
+                return;
+            }
+    
+            if (colorPicked === "rainbow") {
+                let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
+                pixel.style.backgroundColor = rainbow;
+                pixel.setAttribute("data-color", rainbow);
+                return;
+            } else if (colorPicked === "") {
+                pixel.style.backgroundColor = colorPicked;
+                pixel.removeAttribute("data-color");
+                return;
+            }
             pixel.style.backgroundColor = colorPicked;
-            pixel.removeAttribute("data-color");
-            return;
+            pixel.setAttribute("data-color", colorPicked);
         }
-        pixel.style.backgroundColor = colorPicked;
-        pixel.setAttribute("data-color", colorPicked);
     }
-
 }
 // paints the pixel (end) ----------------
 
@@ -360,7 +365,6 @@ function clearPaint() {
         this.classList.remove("clicked");
     }, 50);   
 }
-
 // clears the sketch pad (end) -------
 
 
@@ -382,8 +386,6 @@ function togglePaint() {
         addEventListenersToPixels("remove", false);
     }
 }
-
-
 // eraser (start) ---------
 
 
@@ -408,8 +410,6 @@ function toggleEraser() {
 }
 // eraser (end) ---------
 
-
-
 // //toggle rainbow mode (start) ----
 let rainbowButton = document.querySelector("#rainbow");
 rainbowButton.addEventListener("click", toggleRainbow);
@@ -432,12 +432,10 @@ function toggleRainbow() {
         addEventListenersToPixels("remove", false);
     } 
 }
-
 // //toggle rainbow mode (end) ----
 
 
-// toggle color fill mode (end) -------------------
-
+// toggle color fill mode (start) -------------------
 let colorFillButton = document.querySelector("#fill");
 colorFillButton.addEventListener("click", toggleColorFill);
 
@@ -445,174 +443,159 @@ function toggleColorFill() {
 
     if (colorFillMode["status"] === false) {
         turnOnModeOthersOff(colorFillMode, true);
-
         addClickedClass(this);
         changeCursorStyle("fill");
-        addEventListenersToPixels("remove", false);
-
-    let pixels = document.querySelectorAll(".pixel-dim");
-    pixels.forEach(pixel => {
-        pixel.addEventListener("click", colorFill);
-    });
-
+        addEventListenersToPixels("add", false); //adds color fill action but false argument disables brushing
     
     } else if (colorFillMode["status"] === true) {
         turnOnModeOthersOff(colorFillMode, false);
-
         this.classList.remove("clicked");
         changeCursorStyle("clear");
-
-        let pixels = document.querySelectorAll(".pixel-dim");
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("click", colorFill);
-        });
+        addEventListenersToPixels("remove", false);
         console.log(colorFillMode["status"]);
     }
+}
+//  fill and propagate colors on the pixels
+function colorFill() {
 
-    function colorFill() {
+    if (colorFillMode["status"] === true) {
+        let canvasColor = this.getAttribute("data-color"); // gets the canvas color for reference
 
-        if (colorFillMode["status"] === true) {
-            let canvasColor = this.getAttribute("data-color"); // gets the canvas color for reference
-
-            let originRowNumber = parseInt(this.parentNode.getAttribute("data-row"));
-            let originColumnNumber = parseInt(this.getAttribute("data-column"));
-            
-            let pointOrigin = [originRowNumber, originColumnNumber];
-            let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
-            let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
-
-            let originRowDiv = originPixelRow;
-            let origin = originPixel;
-            
-            // propagate paint from origin function (start) ---------
-            function propagate() {
-
-                // variables
-                originRowDiv = origin.parentNode; //the div where the origin pixel is located
-                let newOriginRow = parseInt(originRowDiv.getAttribute("data-row"));
-                let newOriginColumn = parseInt(origin.getAttribute("data-column"));
-                pointOrigin = [newOriginRow, newOriginColumn];
-
-                // this code area styles and set the origin fill point (start)----------
-                origin.setAttribute("data-origin", "origin");
-                origin.setAttribute("data-color", colorPicked); // adds data-color attribute to first point
-                if (origin.hasAttribute("data-filled")) {
-                    origin.removeAttribute("data-filled");
-                }
-                origin.style.backgroundColor = colorPicked;
-                // this code area styles and set the origin fill point (end)------------
-
-                // adjacent pixels
-                let posX = originRowDiv.querySelector(`[data-column="${newOriginColumn + 1}"]`);
-                let negX = originRowDiv.querySelector(`[data-column="${newOriginColumn - 1}"]`);
-                let posY = document.querySelector(`[data-row="${newOriginRow + 1}"]>[data-column="${newOriginColumn}"]`);
-                let negY = document.querySelector(`[data-row="${newOriginRow - 1}"]>[data-column="${newOriginColumn}"]`);
-                
-                // checks if the adjacent pixel is a origin
-                let adjacentPosXOrigin = checkAttribute(posX, "data-origin");
-                let adjacentNegXOrigin = checkAttribute(negX, "data-origin");
-                let adjacentPosYOrigin = checkAttribute(posY, "data-origin");
-                let adjacentNegYOrigin = checkAttribute(negY, "data-origin");
-
-                //attribute checker function
-                function checkAttribute(pixel, attribute) {
-                    if (pixel === null) {
-                        return true;
-                    } else {
-                        return pixel.hasAttribute(attribute);
-                    }   
-                }
-
-                // checks if the adjacent pixel has the same color as origin
-                let adjacentPosXColor = checkColorAttribute(posX);
-                let adjacentNegXColor = checkColorAttribute(negX);
-                let adjacentPosYColor = checkColorAttribute(posY);
-                let adjacentNegYColor = checkColorAttribute(negY);
-
-                // check adjacent pixels if they have the same canvas color
-                function checkColorAttribute(pixel) {
-                    let originColor = canvasColor;  //get the canvas color as reference
-
-                    if (pixel === null) { return true;} // immediately stop function when pixel is out of bounds
-
-                    let pixelColor = pixel.getAttribute("data-color"); // check color of adjacent pixel
-
-                    if (originColor === colorPicked) { return true;}
-
-                    if (originColor === pixelColor) {
-                        return false;
-                    }else {
-                        return true;
-                    }
-                }
-
-                // paints the pixel if it passes the right conditions
-                if (newOriginColumn >= 1 && 
-                    newOriginColumn < dimensions &&
-                    adjacentPosXOrigin === false &&
-                    adjacentPosXColor === false) {
-                    paintFill(posX);
-                }
-            
-                if (newOriginColumn > 1 && 
-                    newOriginColumn <= dimensions &&  
-                    adjacentNegXOrigin === false &&
-                    adjacentNegXColor === false) {
-                    paintFill(negX); 
-                }
-
-                if (newOriginRow >= 1 && 
-                    newOriginRow < dimensions &&  
-                    adjacentPosYOrigin === false &&
-                    adjacentPosYColor === false) {
-                    paintFill(posY);    
-                }
-            
-                if (newOriginRow > 1 && 
-                    newOriginRow <= dimensions &&  
-                    adjacentNegYOrigin === false &&
-                    adjacentNegYColor === false) {
-                    paintFill(negY);
-                }
-
-            // paints the pixel
-            function paintFill(pixel) {
-                pixel.style.backgroundColor = colorPicked; //paints origin
-                pixel.setAttribute("data-color", colorPicked);
-                pixel.setAttribute("data-filled", "fillPoint");     
-            }
-            
-            }
-            // propagate paint from origin function (end) ---------  
-
-            propagate(); // puts first point of fill using origin div
-
-            //loops until all spaces are painted
-            for(let i = 0; i < dimensions * dimensions; i++) {
-                // loops the pixels with data filPoint attribute to be the next origin for propagation
-                let fillPoint = document.querySelectorAll("[data-filled='fillPoint']");
-                fillPoint.forEach(point => {
-                    origin = point;
-                    propagate();  
-                });
-
-                let remainingFillPoint = document.querySelectorAll("[data-filled='fillPoint']");
-                if (remainingFillPoint.length === 0) {
-                    break; //stops the loop if no more new fillPoints to propagate 
-                }
-
-            }
-            // removes origin data attribute, enables the user to refill pixels
-            let usedAsOrigin =  document.querySelectorAll("[data-origin='origin']");
-                    usedAsOrigin.forEach(origin => {
-                        origin.removeAttribute("data-origin");
-                    });
-        }
-        return;
-    }
-
+        let originRowNumber = parseInt(this.parentNode.getAttribute("data-row"));
+        let originColumnNumber = parseInt(this.getAttribute("data-column"));
         
+        let pointOrigin = [originRowNumber, originColumnNumber];
+        let originPixelRow = document.querySelector(`[data-row="${pointOrigin[0]}"]`);
+        let originPixel = originPixelRow.querySelector(`[data-column="${pointOrigin[1]}"]`);
 
+        let originRowDiv = originPixelRow;
+        let origin = originPixel;
+        
+        // propagate paint from origin function (start) ---------
+        function propagate() {
+
+            // variables
+            originRowDiv = origin.parentNode; //the div where the origin pixel is located
+            let newOriginRow = parseInt(originRowDiv.getAttribute("data-row"));
+            let newOriginColumn = parseInt(origin.getAttribute("data-column"));
+            pointOrigin = [newOriginRow, newOriginColumn];
+
+            // this code area styles and set the origin fill point (start)----------
+            origin.setAttribute("data-origin", "origin");
+            origin.setAttribute("data-color", colorPicked); // adds data-color attribute to first point
+            if (origin.hasAttribute("data-filled")) {
+                origin.removeAttribute("data-filled");
+            }
+            origin.style.backgroundColor = colorPicked;
+            // this code area styles and set the origin fill point (end)------------
+
+            // adjacent pixels
+            let posX = originRowDiv.querySelector(`[data-column="${newOriginColumn + 1}"]`);
+            let negX = originRowDiv.querySelector(`[data-column="${newOriginColumn - 1}"]`);
+            let posY = document.querySelector(`[data-row="${newOriginRow + 1}"]>[data-column="${newOriginColumn}"]`);
+            let negY = document.querySelector(`[data-row="${newOriginRow - 1}"]>[data-column="${newOriginColumn}"]`);
+            
+            // checks if the adjacent pixel is a origin
+            let adjacentPosXOrigin = checkAttribute(posX, "data-origin");
+            let adjacentNegXOrigin = checkAttribute(negX, "data-origin");
+            let adjacentPosYOrigin = checkAttribute(posY, "data-origin");
+            let adjacentNegYOrigin = checkAttribute(negY, "data-origin");
+
+            //attribute checker function
+            function checkAttribute(pixel, attribute) {
+                if (pixel === null) {
+                    return true;
+                } else {
+                    return pixel.hasAttribute(attribute);
+                }   
+            }
+
+            // checks if the adjacent pixel has the same color as origin
+            let adjacentPosXColor = checkColorAttribute(posX);
+            let adjacentNegXColor = checkColorAttribute(negX);
+            let adjacentPosYColor = checkColorAttribute(posY);
+            let adjacentNegYColor = checkColorAttribute(negY);
+
+            // check adjacent pixels if they have the same canvas color
+            function checkColorAttribute(pixel) {
+                let originColor = canvasColor;  //get the canvas color as reference
+
+                if (pixel === null) { return true;} // immediately stop function when pixel is out of bounds
+
+                let pixelColor = pixel.getAttribute("data-color"); // check color of adjacent pixel
+
+                if (originColor === colorPicked) { return true;}
+
+                if (originColor === pixelColor) {
+                    return false;
+                }else {
+                    return true;
+                }
+            }
+
+            // paints the pixel if it passes the right conditions
+            if (newOriginColumn >= 1 && 
+                newOriginColumn < dimensions &&
+                adjacentPosXOrigin === false &&
+                adjacentPosXColor === false) {
+                paintFill(posX);
+            }
+        
+            if (newOriginColumn > 1 && 
+                newOriginColumn <= dimensions &&  
+                adjacentNegXOrigin === false &&
+                adjacentNegXColor === false) {
+                paintFill(negX); 
+            }
+
+            if (newOriginRow >= 1 && 
+                newOriginRow < dimensions &&  
+                adjacentPosYOrigin === false &&
+                adjacentPosYColor === false) {
+                paintFill(posY);    
+            }
+        
+            if (newOriginRow > 1 && 
+                newOriginRow <= dimensions &&  
+                adjacentNegYOrigin === false &&
+                adjacentNegYColor === false) {
+                paintFill(negY);
+            }
+
+        // paints the pixel
+        function paintFill(pixel) {
+            pixel.style.backgroundColor = colorPicked; //paints origin
+            pixel.setAttribute("data-color", colorPicked);
+            pixel.setAttribute("data-filled", "fillPoint");     
+        }
+        
+        }
+        // propagate paint from origin function (end) ---------  
+
+        propagate(); // puts first point of fill using origin div
+
+        //loops until all spaces are painted
+        for(let i = 0; i < dimensions * dimensions; i++) {
+            // loops the pixels with data filPoint attribute to be the next origin for propagation
+            let fillPoint = document.querySelectorAll("[data-filled='fillPoint']");
+            fillPoint.forEach(point => {
+                origin = point;
+                propagate();  
+            });
+
+            let remainingFillPoint = document.querySelectorAll("[data-filled='fillPoint']");
+            if (remainingFillPoint.length === 0) {
+                break; //stops the loop if no more new fillPoints to propagate 
+            }
+
+        }
+        // removes origin data attribute, enables the user to refill pixels
+        let usedAsOrigin =  document.querySelectorAll("[data-origin='origin']");
+                usedAsOrigin.forEach(origin => {
+                    origin.removeAttribute("data-origin");
+                });
+    }
+    return;
 }
 // toggle color fill mode (end) -------------------
 
@@ -664,9 +647,6 @@ function addClickedClass(button) {
 
     let otherClicked = document.querySelectorAll(".clicked");
 
-    // let buttontest = button.querySelector("p").textContent;
-    // console.log(buttontest);
-
     if (button.hasAttribute("data-swatch")) {
         button.classList.add("clicked");
         if (document.querySelector("#rainbow").hasAttribute("class")) {
@@ -680,10 +660,10 @@ function addClickedClass(button) {
             clicked.classList.remove("clicked");
         });
 
-        if (button.textContent === "Clear" || button.textContent === "Eraser") {
+        if (button.dataset.action === "clear" || button.dataset.action === "eraser") {
             button.classList.add("clicked");
             return;
-        } else if (button.textContent === "Rainbow"){
+        } else if (button.dataset.action === "rainbow"){
             document.querySelector("#color-picked-area").classList.add("clicked");
             colorPicked = "rainbow";
         } else {
@@ -692,9 +672,9 @@ function addClickedClass(button) {
         }
         
     } else if (otherClicked.length === 0) {
-        if (button.textContent === "Eraser") {
+        if (button.dataset.action === "eraser") {
             colorPicked = "";
-        } else if (button.textContent === "Rainbow"){
+        } else if (button.dataset.action === "rainbow"){
             document.querySelector("#color-picked-area").classList.add("clicked");
             colorPicked = "rainbow";
         } else {

@@ -8,61 +8,87 @@
     <meta name="description" content="A pixel sketch web app">
     <link rel="stylesheet" href="style.css">
     <script src="index.js" defer></script>
+    <script src="https://kit.fontawesome.com/ff4bf87dd5.js" crossorigin="anonymous"></script>
     <title>Sketch App</title>
 </head>
 <body>
     <header>
-        <h1>Sketch App</h1>
+        <h1>PIXELATE</h1>
     </header>
 
     <main>
-        <div id="ribbon-area"></div>
         <div id="work-area">
-            <div class="tools">
+            <div class="ribbon">
                 <section class="colors">
-                    <h3>Colors</h3>
+                    <h3>COLORS</h3>
 
                     <div class="swatches">
-                        <div id="color-picked-area" class="clicked" data-swatch="swatch">
-                            <div id="color-picked"></div>
-                            <p>Color 1</p>
-                        </div>
-                        <div class="basic-swatches"></div>
-                        <div class="custom-colors"></div>
-                        <input type="color" id="color-picker">
-                    </div>
+                        <div class="color-picker-container">
+                            <div id="color-picked-area" class="clicked" data-swatch="swatch">
+                                <div id="color-picked"></div>
+                                <p>Color</p>
+                            </div>
 
-                    <div class="paint">
-                        <button id="paint" class="clicked">Paint</button>
+                            <input type="color" id="color-picker">
+                        </div>
+
+                        <div class="mini-swatch">
+                            <div class="basic-swatches"></div>
+                            <div class="custom-colors"></div>
+                        </div>
+
+                    </div>
+                </section>
+
+                <section class="paint-tools">
+                    <h3>TOOLS</h3>
+                    <div class="mode-buttons">
+                        <div class="paint">
+                            <button id="paint" class="clicked" data-action="paint"><i class="fa-solid fa-paintbrush"></i> Paint</button>
+                        </div>
+                        
+                        
+                        <div class="eraser">
+                            <button id="eraser" data-action="eraser"><i class="fa-solid fa-eraser"></i> Eraser</button>
+                        </div>
+                        
+                        <div class="color-fill">
+                            <button id="fill" data-action="color-fill"><i class="fa-solid fa-fill-drip"></i> Color Fill</button>
+                        </div>
+    
+                        <div class="rainbow">
+                            <button id="rainbow" data-action="rainbow"><i class="fa-solid fa-rainbow"></i> Rainbow</button>
+                        </div>
+
+                        <div class="clear">
+                            <button id="clear-all" data-action="clear"><i class="fa-solid fa-trash-can"></i> Clear</button>
+                        </div>
+
                     </div>
                     
-                    <div class="clear">
-                        <button id="clear-all">Clear</button>
-                    </div>
-                    <div class="eraser">
-                        <button id="eraser">Eraser</button>
-                    </div>
-                    <div class="rainbow">
-                        <button id="rainbow">Rainbow</button>
-                    </div>
-                    <div class="color-fill">
-                        <button id="fill">Color Fill</button>
-                    </div>
 
-
+                 
 
                 </section>
+
                 <section class="size-tool">
-                    <h3>Pad Size</h3>
-                    <input type="range"
+                    <h3>PAD SIZE</h3>
+                    <div class="resize-buttons">
+                        <input type="range"
                     min="8" max="100" 
                     value="16" 
-                    id="size-slider">
-                    <p class="size-label">16 x 16</p>
+                    id="size-slider"
+                    class="size-slider">
+
                     <button class="size-typer">Type instead</button>
+
+                    </div>
+                    
+                    
+                    <p class="size-label">16 x 16</p>  
                 </section>
-                
             </div>
+
             <div id="pad-area">
                 <div id="sketch-pad"></div>
             </div>
@@ -72,7 +98,7 @@
     </main>
 
     <footer>
-
+        <p>© Copyright - Fred Mark Baldeviso</p>
     </footer>
 </body>
 </html>
