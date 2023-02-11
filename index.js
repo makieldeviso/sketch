@@ -205,7 +205,6 @@ function getColorFromSwatch() {
         addEventListenersToPixels("remove", false);
         eraserButton.classList.remove("clicked");
     }
-    console.log(paintMode["status"]);
 }
 
 let colorPicker = document.querySelector("#color-picker");
@@ -261,56 +260,114 @@ function addEventListenersToPixels(action, padAvailable) {
     let clicked = false;
     padAccess = padAvailable;
 
-    
-    if (action === "remove" || padAccess === false) {
-        let pixels = document.querySelectorAll(".pixel-dim");
-    
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("mouseover", paintPixel);
-        });
+    let touchScreen = "ontouchstart" in window;
 
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("mousedown", paintBrush);
-        });    
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("click", paintPixel);
-        });
-        pixels.forEach(pixel => {
-            pixel.removeEventListener("click", colorFill);
-        });
-        window.removeEventListener("mouseup", paintBrush);
-    }
-    //enables active toggling of padSize without turning off colorFill Mode
-    //since changing padSize initially removes all pixels and add new ones
-    if (colorFillMode["status"] === true){
-        let pixels = document.querySelectorAll(".pixel-dim");
-        pixels.forEach(pixel => {
-            pixel.addEventListener("click", colorFill);
-        });
-        return;
+    // touchscreen mobile feature (start) -----------
 
-    } else if (paintMode["status"] === true || 
-        rainbowMode["status"] === true ||
-        eraserMode["status"] === true) {
-        
-        if (action === "add" && padAccess === true) {
+    if (touchScreen) {
+        let pixels = document.querySelectorAll(".pixel-dim");
+        if (action === "remove" || padAccess === false) {
+            pixels.forEach(pixel => {
+                pixel.removeEventListener("touchstart", paintBrush);
+            });
+            pixels.forEach(pixel => {
+                pixel.removeEventListener("touchmove", paintPixel);
+            });
+
+            window.removeEventListener("touchend", paintBrush);
+        }
+
+
+        if (colorFillMode["status"] === true){
+            // let pixels = document.querySelectorAll(".pixel-dim");
+            pixels.forEach(pixel => {
+                pixel.addEventListener("touchstart", colorFill);
+            });
+            return;
+    
+        } else if (paintMode["status"] === true || 
+            rainbowMode["status"] === true ||
+            eraserMode["status"] === true) {
+            
+            if (action === "add" && padAccess === true) {
+                pixels.forEach(pixel => {
+                    pixel.addEventListener("touchstart", paintBrush);
+                });
+                pixels.forEach(pixel => {
+                    pixel.addEventListener("touchmove", paintPixel);
+                });
+                window.removeEventListener("touchend", paintBrush);
+            }
+         }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+     } else {
+        if (action === "remove" || padAccess === false) {
             let pixels = document.querySelectorAll(".pixel-dim");
         
             pixels.forEach(pixel => {
-                pixel.addEventListener("mouseover", paintPixel);
+                pixel.removeEventListener("mouseover", paintPixel);
             });
     
             pixels.forEach(pixel => {
-                pixel.addEventListener("mousedown", paintBrush);
+                pixel.removeEventListener("mousedown", paintBrush);
             });    
             pixels.forEach(pixel => {
-                pixel.addEventListener("click", paintPixel);
+                pixel.removeEventListener("click", paintPixel);
             });
-            window.addEventListener("mouseup", paintBrush); //allows mouseup outside the pad
+            pixels.forEach(pixel => {
+                pixel.removeEventListener("click", colorFill);
+            });
+            window.removeEventListener("mouseup", paintBrush);
         }
+        //enables active toggling of padSize without turning off colorFill Mode
+        //since changing padSize initially removes all pixels and add new ones
+        if (colorFillMode["status"] === true){
+            let pixels = document.querySelectorAll(".pixel-dim");
+            pixels.forEach(pixel => {
+                pixel.addEventListener("click", colorFill);
+            });
+            return;
+    
+        } else if (paintMode["status"] === true || 
+            rainbowMode["status"] === true ||
+            eraserMode["status"] === true) {
+            
+            if (action === "add" && padAccess === true) {
+                let pixels = document.querySelectorAll(".pixel-dim");
+            
+                pixels.forEach(pixel => {
+                    pixel.addEventListener("mouseover", paintPixel);
+                });
+        
+                pixels.forEach(pixel => {
+                    pixel.addEventListener("mousedown", paintBrush);
+                });    
+                pixels.forEach(pixel => {
+                    pixel.addEventListener("click", paintPixel);
+                });
+                window.addEventListener("mouseup", paintBrush); //allows mouseup outside the pad
+            }
+        }
+    }
     
         function paintBrush(event) {
-            if (event.button !== 0) { //prevents right click from painting the pad
+            if (event.button === 2) { //prevents right click from painting the pad
                 return;
             }
 
@@ -320,6 +377,11 @@ function addEventListenersToPixels(action, padAvailable) {
                 paint(this);
             } else if (event.type === "mouseup") {
                 event.preventDefault();
+                clicked = false;
+            } else if (event.type === "touchstart") { //mobile
+                clicked = true;
+                paint(this);
+            } else if (event.type === "touchend") { // mobile
                 clicked = false;
             }
         }
@@ -331,6 +393,14 @@ function addEventListenersToPixels(action, padAvailable) {
                 paint(this);
             } else if (event.type === "click" && padAccess === true) {
                 paint(this);
+            } else if (event.type === "touchmove") {
+                let touch = event.targetTouches[0];
+                let touchStreak = document.elementFromPoint(touch.clientX, touch.clientY);
+                if (touchStreak.hasAttribute("data-column")) {
+                    paint(touchStreak);
+                } else {
+                    return;
+                }                
             }
         }
     
@@ -356,7 +426,6 @@ function addEventListenersToPixels(action, padAvailable) {
             
         }
     }
-}
 // paints the pixel (end) ----------------
 
 // clears the sketch pad (start) -------
