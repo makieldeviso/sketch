@@ -261,7 +261,7 @@ function addEventListenersToPixels(action, padAvailable) {
     let clicked = false;
     padAccess = padAvailable;
 
-    let touchScreen
+    // let touchScreen
 
     
     if (action === "remove" || padAccess === false) {
