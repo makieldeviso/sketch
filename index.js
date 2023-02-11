@@ -309,6 +309,10 @@ function addEventListenersToPixels(action, padAvailable) {
         }
     
         function paintBrush(event) {
+            if (event.button !== 0) { //prevents right click from painting the pad
+                return;
+            }
+
             if (event.type === "mousedown"){
                 event.preventDefault();
                 clicked = true;
@@ -320,7 +324,7 @@ function addEventListenersToPixels(action, padAvailable) {
         }
     
         function paintPixel(event) {
-            if (event.type === "mouseover" & clicked === false || padAccess === false) {
+            if (event.type === "mouseover" & clicked === false ||padAccess === false ) {
                 return;
             } else if (event.type === "mouseover" && clicked === true && padAccess === true) {
                 paint(this);
@@ -348,6 +352,7 @@ function addEventListenersToPixels(action, padAvailable) {
             }
             pixel.style.backgroundColor = colorPicked;
             pixel.setAttribute("data-color", colorPicked);
+            
         }
     }
 }
