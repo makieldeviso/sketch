@@ -19,8 +19,6 @@ function ModeFlag (mode, status) {
     let colorFillMode = new ModeFlag ("colorFillMode", false);
     let paintMode = new ModeFlag ("paintMode", true);
 
-    console.log(modeFlagsArray);
-
 // Checks the status of modes to enhance active toggling
 function turnOnModeOthersOff(modeToOn, onOrOff) {
     if (onOrOff === false) {
@@ -66,7 +64,6 @@ function typeForPadSize() {
     let sizeFromPrompt = parseInt(prompt("What pad size do you want to work with?\n (Input number between 8 and 100) "));
 
     if (sizeFromPrompt === null) {
-        console.log(sizeFromPrompt);
         return; 
     }
 
@@ -133,8 +130,6 @@ function addPad(pixelSize) {
 
 // Removes and Add individual  pixel to sketch pad (end) --------
 // Pad size editor (end)-----------------------------
-
-
 
 // select color (start) ------------------
 let swatchColors=[];
@@ -205,11 +200,12 @@ function getColorFromSwatch() {
     }
     //turns off eraser mode when swatch is clicked
     if (eraserMode["status"] === true) {
-        turnOnModeOthersOff(eraserButton, false);
+        turnOnModeOthersOff(eraserMode, false);
         changeCursorStyle("clear");
+        addEventListenersToPixels("remove", false);
         eraserButton.classList.remove("clicked");
     }
-
+    console.log(paintMode["status"]);
 }
 
 let colorPicker = document.querySelector("#color-picker");
@@ -241,11 +237,20 @@ function getColorFromPicker() {
 
     addClickedClass(colorPickedArea);
     
+    //change to normal painter if before click painter mode is on
     if (rainbowMode["status"] === true) {
         turnOnModeOthersOff(rainbowMode, false);
         turnOnModeOthersOff(paintMode, true);
         changeCursorStyle("paint");
         addClickedClass(paintButton);
+    }
+
+    //turns off eraser mode when swatch is clicked
+    if (eraserMode["status"] === true) {
+        turnOnModeOthersOff(eraserMode, false);
+        changeCursorStyle("clear");
+        addEventListenersToPixels("remove", false);
+        eraserButton.classList.remove("clicked");
     }
 }
 // select color (end) ------------------
@@ -452,7 +457,6 @@ function toggleColorFill() {
         this.classList.remove("clicked");
         changeCursorStyle("clear");
         addEventListenersToPixels("remove", false);
-        console.log(colorFillMode["status"]);
     }
 }
 //  fill and propagate colors on the pixels
@@ -567,8 +571,7 @@ function colorFill() {
             pixel.style.backgroundColor = colorPicked; //paints origin
             pixel.setAttribute("data-color", colorPicked);
             pixel.setAttribute("data-filled", "fillPoint");     
-        }
-        
+        } 
         }
         // propagate paint from origin function (end) ---------  
 
@@ -599,20 +602,6 @@ function colorFill() {
 }
 // toggle color fill mode (end) -------------------
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 // change cursor style (start) ------
 function changeCursorStyle(action) {
     let pixels = document.querySelectorAll("div.pixel-dim");
@@ -640,7 +629,6 @@ function changeCursorStyle(action) {
     }
 }
 // change cursor style (end) ------
-
 
 //add styling to clicked items (start) ----
 function addClickedClass(button) {

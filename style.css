@@ -85,6 +85,10 @@ section.colors, section.paint-tools, section.size-tool {
     border: 1px solid #CD5888;
 }
 
+#color-picked-area.clicked  p {
+    color: white;
+}
+
 #color-picked{
     width: 50px;
     height: 50px;  
@@ -209,7 +213,6 @@ section.colors, section.paint-tools, section.size-tool {
     margin: 10px 10px 5px;
     width: max-content;
     height: fit-content;
-    overflow: auto;
     padding: 5px;
     display: flex;
     justify-content: center;
@@ -224,10 +227,10 @@ section.colors, section.paint-tools, section.size-tool {
     justify-content: center;
     align-items: center;
     align-self: flex-start;
-    width: 34rem;
-    height: 34rem;
+    width: calc(10rem + 27vw);
+    height: calc(10rem + 27vw);
     border: 5px solid #913175;
-    margin: 30px;
+    margin: 10px;
     background-color: white;
     
 }
@@ -237,7 +240,6 @@ section.colors, section.paint-tools, section.size-tool {
     height: 100%;
     display: flex;
     justify-content: flex-start;
-    /* border: 0.5px solid rebeccapurple; */
 }
 
 .pixel-dim {
@@ -281,11 +283,6 @@ footer p {
     main {
         width: 90vw;
     }
-
-    #sketch-pad {
-        width: 33rem;
-        height: 33rem;
-    }
 }   
 
 @media only screen and (width < 1100px) {
@@ -299,192 +296,190 @@ footer p {
 
 @media only screen and (width < 970px) {
     #sketch-pad {
-        width: 24rem;
-        height: 24rem;
+        width: calc(10rem + 27vw);
+        height: calc(10rem + 27vw);
+        margin: 5px;
     }
-     /* .mini-swatch {
-        width: 160px;
-   } */
+
    #work-area {
     justify-content: center;
     }
-
-   /* .basic-swatches, .custom-colors {
-        width: 150px;
-   } */
 }   
 
 @media only screen and (width < 830px) {
-    #sketch-pad {
-        width: 30rem;
-        height: 30rem;
+    header {
+        height: 5vh;
+    }
+
+    main {
+        height: 90vh;
+    }
+
+    footer {
+        height: 5vh;
+    }
+
+    header h1 {
+        font-size: 1.3rem;
+    }
+
+    h3 {
+        margin: 1px;
+        font-size: 0.8rem;
     }
 
    #work-area {
-    flex-direction: column-reverse;
-    justify-content: center;
-    align-items: center;
-    }
-
-    .swatches {
-        display: flex;
+        height: 100%;
+        flex-direction: column-reverse;
+        justify-content: flex-end;
         align-items: center;
     }
-    .mini-swatch {
-        margin: 0;
+
+    #pad-area {
+        height: max-content;
     }
 
-
     .ribbon {
-        display: flex;
-        flex-direction: row;
+        width: 100%;
+        height: 30%;
         flex-wrap: wrap;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    #sketch-pad {
+        width: calc(10rem + 33vw);
+        height: calc(10rem + 33vw);
+        margin: auto 5px;
     }
 
     section.colors{
+        padding: 2px;
         order: 1;
+        flex: 1;
+        height: 50%;
+        width: 50%;
+        min-width: 330px;
     } 
 
-    section.paint-tools{
+    .color-picker-container {
+        margin: 3px 10px 3px 3px;
+        width: 30%;
+        justify-content: center;
+        align-items: flex-start;
+        height: 100%;
+        gap:5px;
+    }
+
+    div.swatches {
+        display: flex;
+        align-items: flex-start;
+        width: 100%;
+        height: 75%;
+    }
+
+    #color-picked-area {
+        width: calc(60% + 10vw);
+        height: 100%;
+        gap: 2px;
+        justify-content: space-around;
+    }
+
+    #color-picked-area p {
+        font-size: calc(0.3rem + 1vw);
+    }
+
+    #color-picked {
+        width: 80%;
+        height: 80%;
+        margin-top: 2px;
+    }
+
+    #color-picker {
+        width: calc(60% + 10vw);
+        height: 100%;
+    }
+
+    .mini-swatch {
+        display: flex;
+        flex-wrap: nowrap;
+        flex-direction: column;
+    }
+
+    .basic-swatches, .custom-colors {
+        width: 100%;
+    }
+
+    .swatch, .blank-color {
         flex: 1;
-        order: 3;
-    } 
+        width: calc(10px + 1vw);
+        height: calc(10px + 1vw);
+    }
 
     section.size-tool {
         order: 2;
         flex: 1;
+        width: 50%;
+        height: 50%;
+        padding: 2px;
+        min-width: 170px;
     }
-
-    .mode-buttons{
-        display: flex;
-        flex-direction: row;
-        justify-content: center;
-        align-items: center;
-        flex-wrap: wrap;
-        gap: 1rem;
-    }
-
-    button#paint, button#eraser, button#fill, button#rainbow {
-        flex: 1;
-        margin: 2px;
-    }
-
-    button#clear-all {
-        flex: 1;
-        margin: 0 0 0 20px;
-    }
-
-    div.color-picker-container {
-        transform: scale(0.9);
-        justify-content: space-between;
-        align-items: flex-start;
-        margin: 0;
-    }
-
-    p.size-label {
-        margin: 10px;
-        font-size: 1.4rem;
-    }
-
-    .resize-buttons {
-        margin: 10px;
-    }
-    main {
-        height: max-content;
-    }
-    
-    footer {
-        height: max-content;
-    }
-}   
-
-@media only screen and (width < 670px) {
-    #sketch-pad {
-        width: 20rem;
-        height: 20rem;
-        margin: 10px;
-    }
-    /* .mini-swatch {
-        width: 160px;
-   } */
-   /* .basic-swatches, .custom-colors {
-        width: 110px;
-        min-width: 110px;
-        margin: 0 10px;
-   }
-   .swatch, .blank-color {
-        width: 15px;
-        height: 15px;
-        border: 0.3px solid gray; 
-} */
 
     #size-slider {
-        margin: 15px;
-    }
-
-
-}
-
-
-
-
-
-/* @media only screen and (width < 380px) {
-    #sketch-pad {
-        width: 10rem;
-        height: 10rem;
         margin: 5px;
     }
 
-    h1 {
-        transform: scale(0.5);
+    p.size-label {
+        font-size: 1rem;
     }
 
+    section.paint-tools{
+        flex: 1;
+        order: 3;
+        width: 100%;
+        padding: 2px;
+        min-width: 80vw;
+    } 
+
+    .mode-buttons {
+        display: flex;
+        justify-content: center;
+        flex-direction: row;
+        flex-wrap: wrap;
+    }
+
+    #clear-all {
+        margin: 5px 5px 5px 25px;
+    }
+  
+}
+
+@media only screen and (width < 570px) {
+    section.size-tool, section.paint-tools {
+        height: max-content;
+        margin: 4px;
+    }
     section.colors {
-        transform: scale(1);
+        margin: 4px;
     }
 
-    section.size-tool {
-        transform: scale(0.5);
+    #clear-all, #eraser, #rainbow, #fill, #paint {
+        font-size: 1rem;
+        width: 90px;
+        height: 25px;
     }
 
-    section.paint-tools {
-        transform: scale(0.5); 
+    footer p{
+        font-size: 0.8rem;
     }
-} */
+}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
- /* .mini-swatch {
-        width: 160px;
-   }
-   .basic-swatches, .custom-colors {
-        width: 150px;
-   } */
-
-
+@media only screen and (width < 420px) {
+    #work-area {
+        justify-content: center;
+    }
+}
+   
 /* slider style */
 input[type=range].size-slider {
     width: 150px;
@@ -580,5 +575,4 @@ input[type=range].size-slider {
     background-position: center;
     opacity: 100%;
     filter: brightness(50%);
-
 }
