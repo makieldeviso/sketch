@@ -487,6 +487,12 @@ footer p {
         justify-content: center;
     }
 }
+
+@media only screen and (width < 380px) {
+    #work-area {
+        justify-content: flex-end;
+    }
+}
    
 /* slider style */
 input[type=range].size-slider {
