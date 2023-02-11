@@ -166,13 +166,16 @@ section.colors, section.paint-tools, section.size-tool {
 #rainbow.clicked, 
 #fill.clicked,
 #paint.clicked  {
-    scale:1.1;
+    transform:scale(1.1);
     background:linear-gradient(#CD5888, #913175);
     color: #E9E8E8;
     box-shadow: 0 0 2px 1px #CD5888;
     border: 2px solid white;
 
 }
+
+
+
 
 #clear-all:hover,
 #eraser:hover, 
@@ -185,6 +188,11 @@ section.colors, section.paint-tools, section.size-tool {
     box-shadow: 0 0 2px 1px #CD5888;
     border: 2px solid white;
 
+}
+
+#rainbow:hover, #rainbow.clicked {
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    animation: rainbow-border 1s ease-in-out infinite;
 }
 
 /* section.size-tool */
@@ -576,3 +584,30 @@ input[type=range].size-slider {
     opacity: 100%;
     filter: brightness(50%);
 }
+
+@keyframes rainbow-border {
+    0% {
+      box-shadow: 0 0 10px rgba(255, 0, 0, 2);
+    }
+    15% {
+      box-shadow: 0 0 10px rgba(255, 127, 0, 2);
+    }
+    30% {
+      box-shadow: 0 0 10px rgba(255, 255, 0, 2);
+    }
+    45% {
+      box-shadow: 0 0 10px rgba(0, 255, 0, 2);
+    }
+    60% {
+      box-shadow: 0 0 10px rgba(0, 0, 255, 2);
+    }
+    75% {
+      box-shadow: 0 0 10px rgba(75, 0, 130, 2);
+    }
+    90% {
+      box-shadow: 0 0 10px rgba(148, 0, 211, 2);
+    }
+    100% {
+      box-shadow: 0 0 10px rgba(255, 0, 0, 2);
+    }
+  }

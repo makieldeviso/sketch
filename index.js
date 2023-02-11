@@ -255,7 +255,6 @@ function getColorFromPicker() {
 }
 // select color (end) ------------------
 
-
 // paints the pixel (start) ----------------
 //  add event listeners and check if the pad is available -------
 function addEventListenersToPixels(action, padAvailable) {
@@ -338,6 +337,8 @@ function addEventListenersToPixels(action, padAvailable) {
             if (colorPicked === "rainbow") {
                 let rainbow = (swatchColors[Math.floor(Math.random() * (9 - 3 + 1)) + 3]["color"]);
                 pixel.style.backgroundColor = rainbow;
+                colorPickedPalette.style.backgroundColor = rainbow;
+                lastColor = rainbow;
                 pixel.setAttribute("data-color", rainbow);
                 return;
             } else if (colorPicked === "") {
