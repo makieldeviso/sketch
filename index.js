@@ -261,8 +261,6 @@ function addEventListenersToPixels(action, padAvailable) {
     let clicked = false;
     padAccess = padAvailable;
 
-    // let touchScreen
-
     
     if (action === "remove" || padAccess === false) {
         let pixels = document.querySelectorAll(".pixel-dim");
