@@ -105,6 +105,7 @@ section.colors, section.paint-tools, section.size-tool {
 
 #color-picked-area p {
     font-size: 1rem;
+    color: white;
 }
 
 .mini-swatch {
