@@ -55,7 +55,7 @@ The modeFlagArray consists of the mode objects created though an object construc
 ```
 let paintMode = new ModeFlag("paintMode", true);
 ```
-It will produce an object {mode: 'paintMode', status: 'true'} pushed to the modeFlagArray. This array is mainly used to toggle between the different tools of the webapp.
+It will produce an object {mode: 'paintMode', status: true} pushed to the modeFlagArray. This array is mainly used to toggle between the different tools of the webapp.
 
 Painting the canvas works by adding eventListeners to the pixels, which detects mouse events.
 
@@ -63,13 +63,13 @@ The 'Paint' tool allows the user to paint the canvas with selected color either 
 
 While the 'Rainbow' tool practically work the same way as 'Paint', the color it paints randomize from a set of colors on every pixel. 
 
-The 'Eraser' tool works by simply setting the *colorPicked* variable to empty string, which satisfies a conditional in the *paint* function to clear the background color and color dataset in the selected pixels.
+The 'Eraser' tool works by simply setting the *colorPicked* variable to empty string, which satisfies a conditional in the *paint* function to clear the background color then assigning a color dataset on the selected pixels.
 
 Painting a pixel is scripted to only work with actions from the left mouse key. In addition, if the user drags the cursor outside the canvas, it will continually work when the user go back to the canvas given that the user has not yet released the mouse click, otherwise the dragging function is cancelled. 
 
  The 'Clear' tool simply removes the background color and color dataset associated to the pixels in the canvas. It also turns off all modes and remove any eventListeners to the pixels. This prompts users to click their next move.
 
- The 'Color Fill' tool is a special feature I added to the project. With selecting a color and clicking on an origin point, it fill the pixels bounding by dissimilar color/s.
+ The 'Color Fill' tool is a special feature I added to the project. With selecting a color and clicking on an origin point, it fills the pixels bounded by dissimilar color/s.
  This works by:
  1. When an origin point is clicked, it gets the element's color dataset as reference for *original color*.
 
@@ -83,4 +83,7 @@ Painting a pixel is scripted to only work with actions from the left mouse key. 
 
  6. The loop will then set the *fillPoint* pixels as new *origin* pixels to continue propagation while coloring bounded pixels. The loop breaks when there are no more new *fillPoint* pixels to set as new *origin* pixel for propagation.
 
- 7. Finally, when all pixels to be filled are painted, the assigned *origin* datasets are removed from the pixels.
+ 7. Finally, when all pixels to be filled are painted, the assigned *origin* datasets are removed from the pixels. Awaiting for its next color fill.
+
+ # Live Preview
+ This webapp is available in [sketch](https://makieldeviso.github.io/sketch/)
