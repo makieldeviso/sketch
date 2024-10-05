@@ -71,6 +71,7 @@ function typeForPadSize() {
         dimensions = sizeFromPrompt;
         sizeLabel.textContent = `${dimensions} x ${dimensions}`;
         sizeSlider.value = dimensions;
+        
     } else if (sizeFromPrompt < 8 || sizeFromPrompt > 100) {
         alert("Invalid input! Please enter a number between 8 and 100.");
         typeForPadSize();
@@ -86,12 +87,12 @@ let sizeSlider = document.querySelector("#size-slider");
 sizeSlider.addEventListener("input", slideForPadSize);
 
 function slideForPadSize() {
-        dimensions = this.value;
-        sizeLabel.textContent = `${dimensions} x ${dimensions}`;
-        removePad(previousDimensions);
-        addPad(dimensions);
+    dimensions = this.value;
+    sizeLabel.textContent = `${dimensions} x ${dimensions}`;
+    removePad(previousDimensions);
+    addPad(dimensions);
 
-        addEventListenersToPixels("add", true);
+    addEventListenersToPixels("add", true);
 }
 // Sets the pad size through slider (end) -----------
 
@@ -169,19 +170,18 @@ for (let i = 0; i < swatchColors.length; i++) {
     customColorArea.appendChild(swatchPixel);
 }
 
-
 // select color by clicking on swatches
 let swatchSelect = document.querySelectorAll(".swatch");
 swatchSelect.forEach(swatch =>{
     swatch.addEventListener("click", getColorFromSwatch);
-    })
-
+})
 
 function getColorFromSwatch() {
 
     if (this === colorPickedArea) {
         colorPicked = lastColor;
         colorPickedPalette.style.backgroundColor = colorPicked;
+
     } else {
         color = this.getAttribute("style").split(/[:;]/)[1];
         colorPicked = color;
@@ -198,6 +198,7 @@ function getColorFromSwatch() {
         changeCursorStyle("paint");
         addClickedClass(paintButton);
     }
+
     //turns off eraser mode when swatch is clicked
     if (eraserMode["status"] === true) {
         turnOnModeOthersOff(eraserMode, false);
@@ -209,7 +210,6 @@ function getColorFromSwatch() {
 
 let colorPicker = document.querySelector("#color-picker");
 colorPicker.addEventListener("change", getColorFromPicker);
-
 
 // select color from a color picker
 function getColorFromPicker() {
@@ -299,22 +299,6 @@ function addEventListenersToPixels(action, padAvailable) {
                 window.removeEventListener("touchend", paintBrush);
             }
          }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
      } else {
         if (action === "remove" || padAccess === false) {
@@ -425,7 +409,7 @@ function addEventListenersToPixels(action, padAvailable) {
             pixel.setAttribute("data-color", colorPicked);
             
         }
-    }
+}
 // paints the pixel (end) ----------------
 
 // clears the sketch pad (start) -------
@@ -467,9 +451,8 @@ function togglePaint() {
         addEventListenersToPixels("remove", false);
     }
 }
+
 // eraser (start) ---------
-
-
 function toggleEraser() {
 
     if (eraserMode["status"] === false) {
@@ -514,7 +497,6 @@ function toggleRainbow() {
     } 
 }
 // //toggle rainbow mode (end) ----
-
 
 // toggle color fill mode (start) -------------------
 let colorFillButton = document.querySelector("#fill");
@@ -642,12 +624,12 @@ function colorFill() {
                 paintFill(negY);
             }
 
-        // paints the pixel
-        function paintFill(pixel) {
-            pixel.style.backgroundColor = colorPicked; //paints origin
-            pixel.setAttribute("data-color", colorPicked);
-            pixel.setAttribute("data-filled", "fillPoint");     
-        } 
+            // paints the pixel
+            function paintFill(pixel) {
+                pixel.style.backgroundColor = colorPicked; //paints origin
+                pixel.setAttribute("data-color", colorPicked);
+                pixel.setAttribute("data-filled", "fillPoint");     
+            } 
         }
         // propagate paint from origin function (end) ---------  
 
