@@ -5,6 +5,11 @@ let lastColor = "black"; //records previous color
 
 let padAccess = true; //checks if the pad is available
 
+const updateFooterYear = (function () {
+    const footerYear = document.querySelector('#footer-year');
+    footerYear.textContent = (new Date()).getFullYear();
+})();
+
 // Mode flags status toggler (start) -----------------------
 let modeFlagsArray = [];
 function ModeFlag (mode, status) {
