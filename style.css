@@ -935,7 +935,11 @@ input[type=range].size-slider {
     }
 }
 
-@media only screen and (width <= 320px) {
+@media only screen and (width <= 375px) {
+    body {
+        min-width: 320px;
+    }
+
     div.swatches {
         gap: 4px;
     }

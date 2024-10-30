@@ -742,7 +742,11 @@ const adjustPadResize = (function () {
         const sketchPad = document.querySelector('#sketch-pad');
         const {width, height} = screen;
         
-        if (width <= 1024 && width > 820) {
+        if (width > 1024) {
+            sketchPad.style.width = '550px';
+            sketchPad.style.height = '550px';
+
+        } else if (width <= 1024 && width > 820) {
             let sketchPadDim = `${Math.floor(width * 0.5)}px`;
 
             if (height >= 1024) {
@@ -756,7 +760,7 @@ const adjustPadResize = (function () {
             const sketchPadDim = `${Math.floor(width * 0.8)}px`;
             sketchPad.style.width = sketchPadDim;
             sketchPad.style.height = sketchPadDim;
-        }
+        } 
     }
 
     window.addEventListener('load', adjustSize);
