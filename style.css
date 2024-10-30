@@ -15,8 +15,7 @@
 }
 
 body {
-    height: 100vh;
-    overflow: hidden;
+    height: 100%;
     margin: auto;
     position: relative;
 
@@ -53,6 +52,10 @@ header {
     align-items: center;
 }
 
+button:hover {
+    cursor: pointer;
+}
+
 #work-area {
     display: flex;
     justify-content: center;
@@ -85,6 +88,18 @@ section.colors, section.paint-tools, section.size-tool {
     padding: 8px;
     background-color: rgba(77, 76, 125, 80%);
     border: 2px solid #E9D5DA;
+}
+
+section.colors {
+    grid-area: colors;
+}
+
+section.paint-tools {
+    grid-area: tools;
+}
+
+section.size-tool {
+    grid-area: size-tool;
 }
 
 .color-picker-container {
@@ -137,6 +152,11 @@ section.colors, section.paint-tools, section.size-tool {
     border-radius: 5%;
 }
 
+#color-picker:hover {
+    cursor: pointer;
+    filter: brightness(1.1);
+}
+
 #color-picked-area p {
     font-size: 1rem;
     color: white;
@@ -175,6 +195,7 @@ section.colors, section.paint-tools, section.size-tool {
 .swatch:hover {
     box-shadow: 0 0 2px 1px #CD5888;
     border: 0.5px solid white;
+    cursor: pointer;
 }
 .blank-color {
     border-radius: 5px;
@@ -262,8 +283,10 @@ section.colors, section.paint-tools, section.size-tool {
     justify-content: center;
     align-items: center;
     align-self: flex-start;
-    width: calc(10rem + 27vw);
-    height: calc(10rem + 27vw);
+    /* width: calc(10rem + 27vw);
+    height: calc(10rem + 27vw); */
+    width: 550px;
+    height: 550px;
     border: 5px solid #913175;
     margin: 10px;
     background-color: white;
@@ -454,219 +477,9 @@ input[type=range].size-slider {
   }
 
 /* Media queries */
-/* @media only screen and (width < 1260px) {
+
+@media only screen and (max-width: 500px) {
     body {
-        width: 90vw;
-    }
-    main {
-        width: 90vw;
-    }
-}   
-
-@media only screen and (width < 1100px) {
-    body {
-        width: 95vw;
-    }
-    main {
-        width: 95vw;
-    }
-}   
-
-@media only screen and (width < 970px) {
-    #sketch-pad {
-        width: calc(10rem + 27vw);
-        height: calc(10rem + 27vw);
-        margin: 5px;
-    }
-
-   #work-area {
-    justify-content: center;
-    }
-}   
-
-@media only screen and (width < 830px) {
-    header {
-        height: 5vh;
-    }
-
-    main {
-        height: 90vh;
-    }
-
-    footer {
-        height: 5vh;
-    }
-
-    header h1 {
-        font-size: 1.3rem;
-    }
-
-    h3 {
-        margin: 1px;
-        font-size: 0.8rem;
-    }
-
-   #work-area {
-        height: 100%;
-        flex-direction: column-reverse;
-        justify-content: flex-end;
-        align-items: center;
-    }
-
-    #pad-area {
-        height: max-content;
-    }
-
-    .ribbon {
-        width: 100%;
-        height: 30%;
-        flex-wrap: wrap;
-        flex-direction: row;
-        justify-content: center;
-    }
-
-    #sketch-pad {
-        width: calc(10rem + 33vw);
-        height: calc(10rem + 33vw);
-        margin: auto 5px;
-    }
-
-    section.colors{
-        padding: 2px;
-        order: 1;
-        flex: 1;
-        height: 50%;
-        width: 50%;
-        min-width: 330px;
-    } 
-
-    .color-picker-container {
-        margin: 3px 10px 3px 3px;
-        width: 30%;
-        justify-content: center;
-        align-items: flex-start;
-        height: 100%;
-        gap:5px;
-    }
-
-    div.swatches {
-        display: flex;
-        align-items: flex-start;
-        width: 100%;
-        height: 75%;
-    }
-
-    #color-picked-area {
-        width: calc(60% + 10vw);
-        height: 100%;
-        gap: 2px;
-        justify-content: space-around;
-    }
-
-    #color-picked-area p {
-        font-size: calc(0.3rem + 1vw);
-    }
-
-    #color-picked {
-        width: 80%;
-        height: 80%;
-        margin-top: 2px;
-    }
-
-    #color-picker {
-        width: calc(60% + 10vw);
-        height: 100%;
-    }
-
-    .mini-swatch {
-        display: flex;
-        flex-wrap: nowrap;
-        flex-direction: column;
-    }
-
-    .basic-swatches, .custom-colors {
-        width: 100%;
-    }
-
-    .swatch, .blank-color {
-        flex: 1;
-        width: calc(10px + 1vw);
-        height: calc(10px + 1vw);
-    }
-
-    section.size-tool {
-        order: 2;
-        flex: 1;
-        width: 50%;
-        height: 50%;
-        padding: 2px;
-        min-width: 170px;
-    }
-
-    #size-slider {
-        margin: 5px;
-    }
-
-    p.size-label {
-        font-size: 1rem;
-    }
-
-    section.paint-tools{
-        flex: 1;
-        order: 3;
-        width: 100%;
-        padding: 2px;
-        min-width: 80vw;
-    } 
-
-    .mode-buttons {
-        display: flex;
-        justify-content: center;
-        flex-direction: row;
-        flex-wrap: wrap;
-    }
-
-    #clear-all {
-        margin: 5px 5px 5px 25px;
-    }
-  
-}
-
-@media only screen and (width < 570px) {
-    section.size-tool, section.paint-tools {
-        height: max-content;
-        margin: 4px;
-    }
-    section.colors {
-        margin: 4px;
-    }
-
-    #clear-all, #eraser, #rainbow, #fill, #paint {
-        font-size: 1rem;
-        width: 90px;
-        height: 25px;
-    }
-
-    footer p, footer a{
-        font-size: 0.8rem;
-    }
-}
-
-@media only screen and (width < 420px) {
-    #work-area {
-        justify-content: center;
-    }
-}
-
-@media only screen and (width < 380px) {
-    #work-area {
-        justify-content: flex-end;
-    }
-} */
-
-@media only screen and (max-width: 425px) {
-    body {
-
         grid-template-rows: max-content 1fr max-content;
     }
 
@@ -709,8 +522,9 @@ input[type=range].size-slider {
 
     .ribbon {
         grid-area: ribbon;
+        justify-self: center;
         align-self: self-start;
-
+        width: 95%;
         margin: 8px 0;
     }
 
@@ -806,5 +620,333 @@ input[type=range].size-slider {
         font-size: 0.8rem;
         align-self: end;
     }
-
 }
+
+@media only screen and (max-height: 700px) {
+    main {
+        height: 95%;
+        overflow: hidden;
+    }
+
+    #work-area {
+        grid-template-rows: max-content 1fr;
+    }
+
+    .ribbon {
+        height: 100%;
+        overflow-y: auto;
+        padding-bottom: 30px;
+    }
+}
+
+@media only screen and (max-width: 821px) and (min-width: 501px) {
+    main {
+        width: 100%;
+        height: 100%;
+    }
+
+    #work-area {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr ;
+        grid-template-rows: 1fr max-content;
+        justify-content: center;
+        align-items: start;
+        grid-template-areas: 
+            "pad"
+            "ribbon";
+    }
+
+    #pad-area {
+        grid-area: pad;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .ribbon {
+        grid-area: ribbon;
+        justify-self: center;
+        align-self: self-start;
+        width: 95%;
+        margin: var(--margin);
+        gap: var(--margin);
+
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: max-content max-content;
+        grid-template-areas: 
+            "colors size-tool"
+            "tools tools";
+    }
+
+    section.size-tool {
+        grid-area: size-tool;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 1fr max-content;
+    }
+
+    input[type=range].size-slider {
+        width: unset;
+    }
+    
+    .resize-buttons {
+        align-self: end;
+    }
+
+    section.colors, section.paint-tools, section.size-tool {
+        margin: 0;
+        padding: 8px;
+    }
+
+    /* colors (start) */
+    section.colors {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: max-content max-content;
+    }
+
+    section.colors h3 {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+    }
+
+    div.swatches {
+        grid-column: 1 / 3;
+        grid-row: 2 / 3;
+        width: max-content;
+        margin: auto;
+        gap: var(--margin);
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        grid-template-columns: 0.5fr 1fr;
+    }
+
+    .mini-swatch {
+        height: max-content;
+        width: max-content;
+        margin: 0;
+    }
+
+    .color-picker-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 8px;
+        gap: 8px;
+    }
+
+    #color-picked-area.clicked p {
+        font-size: 0.8rem;
+    }
+
+    #color-picked-area, #color-picker {
+        width: unset;
+        gap: 4px;
+        height: 60px;
+    }
+
+    .swatch, .blank-color {
+        flex: 1;
+        width: calc(10px + 1vw);
+        height: calc(10px + 1vw);
+    }
+    /* colors (end) */
+
+    /* tools (start) */
+    .mode-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        column-gap: var(--margin);
+    }
+
+    #clear-all, #eraser, #rainbow, #fill, #paint, .size-typer {
+        font-size: 1rem;
+        width: 115px;
+        min-width: max-content;
+        margin: 4px;
+    }
+
+    #clear-all {
+        margin: 0 0 0 calc(var(--margin) * 2);
+    }
+    /* tools (start) */
+    
+    .size-label {
+        font-size: 1.3rem;
+    }
+    
+}
+
+@media only screen and (width <= 1025px) and (height >= 1025px) {
+    main {
+        width: 100%;
+        height: 100%;
+    }
+
+    #work-area {
+        width: 100%;
+        height: 100%;
+        display: grid;
+        grid-template-columns: 1fr ;
+        grid-template-rows: 1fr max-content;
+        justify-content: center;
+        align-items: start;
+        grid-template-areas: 
+            "pad"
+            "ribbon";
+    }
+
+    #pad-area {
+        grid-area: pad;
+        justify-self: center;
+        align-self: center;
+    }
+
+    .ribbon {
+        grid-area: ribbon;
+        justify-self: center;
+        align-self: self-start;
+        width: 95%;
+        margin: var(--margin);
+        gap: var(--margin);
+
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: max-content max-content;
+        grid-template-areas: 
+            "colors size-tool"
+            "tools tools";
+    }
+
+    section.colors, section.paint-tools, section.size-tool {
+        margin: 0;
+        padding: 8px;
+    }
+
+    /* colors (start) */
+    section.colors {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        grid-template-rows: max-content max-content;
+    }
+
+    section.colors h3 {
+        grid-column: 1 / 3;
+        grid-row: 1 / 2;
+    }
+
+    div.swatches {
+        grid-column: 1 / 3;
+        grid-row: 2 / 3;
+        width: max-content;
+        margin: auto;
+        gap: var(--margin);
+        display: grid;
+        align-items: center;
+        justify-items: center;
+        grid-template-columns: 0.5fr 1fr;
+    }
+
+    .mini-swatch {
+        height: max-content;
+        width: max-content;
+        margin: 0;
+    }
+
+    .color-picker-container {
+        width: 100%;
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        margin: 8px;
+        gap: 8px;
+    }
+
+    #color-picked-area, #color-picker {
+        width: unset;
+    }
+
+    .swatch, .blank-color {
+        flex: 1;
+        width: calc(10px + 1vw);
+        height: calc(10px + 1vw);
+    }
+    /* colors (end) */
+
+    /* tools (start) */
+    #clear-all, #eraser, #rainbow, #fill, #paint, .size-typer {
+        padding: var(--padding);
+        height: unset;
+        min-width: max-content;
+    }
+
+    .mode-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        align-items: center;
+        column-gap: var(--margin);
+    }
+
+    #clear-all {
+        margin: 0 0 0 calc(var(--margin) * 2);
+    }
+    /* tools (start) */
+
+    /* Sizer (start) */
+    section.size-tool {
+        grid-area: size-tool;
+        display: grid;
+        grid-template-columns: 1fr;
+        grid-template-rows: max-content 1fr max-content;
+    }
+
+    input[type=range].size-slider {
+        width: 100%;
+    }
+    
+    .resize-buttons {
+        align-self: center;
+        display: grid;
+        grid-template-columns: 1fr max-content;
+        gap: var(--margin);
+        justify-content: center;
+        justify-items: center;
+    }
+    /* Sizer (end) */
+}
+
+
+@media (hover: none) {
+    body {
+        height: 100vh;
+        overflow-y: hidden;
+    }
+
+    @media only screen and (width >= 1024px) and (height >= 600px) {
+        body {
+           height: 100%;
+            overflow-y: auto;
+        }
+    }
+}
+
+@media only screen and (width <= 320px) {
+    div.swatches {
+        gap: 4px;
+    }
+
+    .swatch, .blank-color {
+        width: calc(11px);
+        height: calc(11px);
+    }
+
+    .blank-color {
+        border-radius: 2px;
+    }
+}
+

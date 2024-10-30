@@ -5,12 +5,7 @@ let lastColor = "black"; //records previous color
 
 let padAccess = true; //checks if the pad is available
 
-const updateFooterYear = (function () {
-    const footerYear = document.querySelector('#footer-year');
-    footerYear.textContent = (new Date()).getFullYear();
-})();
-
-// Mode flags status toggler (start) -----------------------
+// Mode flags status toggler (start) 
 let modeFlagsArray = [];
 function ModeFlag (mode, status) {
     this.mode =  mode;
@@ -18,7 +13,6 @@ function ModeFlag (mode, status) {
 
     modeFlagsArray.push(this);
 }
-
     let rainbowMode = new ModeFlag ("rainbowMode", false);
     let eraserMode = new ModeFlag ("eraserMode", false);
     let colorFillMode = new ModeFlag ("colorFillMode", false);
@@ -37,7 +31,7 @@ function turnOnModeOthersOff(modeToOn, onOrOff) {
         modeToOn["status"] = true;
     }
 }
-// Mode flags status toggler (end) -----------------------
+// Mode flags status toggler (end)
 
 let sketchPad = document.querySelector("#sketch-pad");
 let colorPickedArea = document.querySelector("#color-picked-area");
@@ -101,9 +95,7 @@ function slideForPadSize() {
 }
 // Sets the pad size through slider (end) -----------
 
-
 // Removes and add individual  pixel to sketch pad (start) --------
-
 // Removes previous pad before inserting new pad
 function removePad(pixelRowSize) { 
     let padRows = document.querySelectorAll(".pad-row");
@@ -736,3 +728,37 @@ function addClickedClass(button) {
     button.classList.add("clicked");
 }
 //add styling to clicked items (end) ----
+
+// Update footer contents
+const updateFooterYear = (function () {
+    const footerYear = document.querySelector('#footer-year');
+    footerYear.textContent = (new Date()).getFullYear();
+})();
+
+// Adjust pad dimensions on load and resize
+const adjustPadResize = (function () {
+    
+    const adjustSize = function() {
+        const sketchPad = document.querySelector('#sketch-pad');
+        const {width, height} = screen;
+        
+        if (width <= 1024 && width > 820) {
+            let sketchPadDim = `${Math.floor(width * 0.5)}px`;
+
+            if (height >= 1024) {
+                sketchPadDim = `${Math.floor(width * 0.8)}px`
+            }
+
+            sketchPad.style.width = sketchPadDim;
+            sketchPad.style.height = sketchPadDim;
+
+        } else if (width <= 820 && width >= 320) {
+            const sketchPadDim = `${Math.floor(width * 0.8)}px`;
+            sketchPad.style.width = sketchPadDim;
+            sketchPad.style.height = sketchPadDim;
+        }
+    }
+
+    window.addEventListener('load', adjustSize);
+    window.addEventListener('resize', adjustSize);
+})();
