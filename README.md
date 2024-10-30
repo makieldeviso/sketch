@@ -85,5 +85,5 @@ Painting a pixel is scripted to only work with actions from the left mouse key. 
 
  7. Finally, when all pixels to be filled are painted, the assigned *origin* datasets are removed from the pixels. Awaiting for its next color fill.
 
- # Live Preview
+ ## Live Preview
  This webapp is available in [sketch](https://makieldeviso.github.io/sketch/)
